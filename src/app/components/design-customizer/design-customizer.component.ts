@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
@@ -12,17 +12,17 @@ import { ThemeService } from '../../services/theme.service';
   templateUrl: './design-customizer.component.html',
   styleUrl: './design-customizer.component.scss'
 })
-export class DesignCustomizerComponent {
+export class DesignCustomizerComponent implements OnInit {
   public menuService = inject(MenuService);
-  private themeService = inject(ThemeService);
+  public themeService = inject(ThemeService);
 
-  restaurantName = signal('VELOCITY');
-  restaurantDescription = signal('Modern Fusion Kitchen');
+  restaurantName = signal('');
+  restaurantDescription = signal('');
   restaurantLogo = signal<string | null>(null);
   
   fonts = ['Inter', 'Poppins', 'Roboto', 'Montserrat'];
-  selectedFont = 'Inter';
-  selectedTheme = 'neon';
+  selectedFont = signal('Inter');
+  selectedTheme = signal('neon');
 
   // Themes als Array für einfache Iteration
   themesArray = [
@@ -32,16 +32,32 @@ export class DesignCustomizerComponent {
     { key: 'forest', value: { name: 'Forest Dark', primary: '#22c55e', secondary: '#16a34a', accent: '#84cc16' } }
   ];
 
-  constructor() {
+  ngOnInit() {
+    // Daten beim Initialisieren laden
+    this.loadInitialData();
+  }
+
+  private loadInitialData() {
     const restaurant = this.menuService.restaurant();
-    this.restaurantName.set(restaurant.name);
-    this.restaurantDescription.set(restaurant.description);
-    this.selectedFont = restaurant.font;
-    this.selectedTheme = restaurant.theme;
+    this.restaurantName.set(restaurant.name || 'VELOCITY');
+    this.restaurantDescription.set(restaurant.description || 'Modern Fusion Kitchen');
+    this.selectedFont.set(restaurant.font || 'Inter');
+    this.selectedTheme.set(restaurant.theme || 'neon');
+    
+    if (restaurant.logo) {
+      this.restaurantLogo.set(restaurant.logo);
+    }
+
+    // Theme Service initialisieren
+    this.themeService.setTheme(this.selectedTheme());
+  }
+
+  getCurrentTheme() {
+    return this.themeService.getCurrentTheme();
   }
 
   selectTheme(themeName: string) {
-    this.selectedTheme = themeName;
+    this.selectedTheme.set(themeName);
     this.themeService.setTheme(themeName);
     this.menuService.updateRestaurant({ theme: themeName });
   }
@@ -57,7 +73,7 @@ export class DesignCustomizerComponent {
   }
 
   updateFont(font: string) {
-    this.selectedFont = font;
+    this.selectedFont.set(font);
     this.menuService.updateRestaurant({ font });
   }
 
@@ -77,5 +93,14 @@ export class DesignCustomizerComponent {
       };
       reader.readAsDataURL(input.files[0]);
     }
+  }
+
+  // TrackBy functions für bessere Performance
+  trackByThemeKey(index: number, theme: any): string {
+    return theme.key;
+  }
+
+  trackByFont(index: number, font: string): string {
+    return font;
   }
 }
