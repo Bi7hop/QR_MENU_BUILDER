@@ -1,0 +1,82 @@
+:host {
+  display: block;
+}
+
+// Custom focus styles
+input:focus,
+textarea:focus {
+  outline: none;
+  ring-width: 2px;
+  ring-opacity: 0.5;
+}
+
+// File upload area animations
+.drag-over {
+  transform: scale(1.02);
+  border-color: theme('colors.blue.400');
+  background-color: theme('colors.blue.50/10%');
+}
+
+// Theme button hover effects
+button {
+  &:hover {
+    transform: translateY(-2px);
+  }
+  
+  &.selected {
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+  }
+}
+
+// Color picker styling
+input[type="color"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  
+  &::-webkit-color-swatch {
+    border: none;
+    border-radius: 8px;
+  }
+  
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+  }
+  
+  &::-moz-color-swatch {
+    border: none;
+    border-radius: 8px;
+  }
+}
+
+// Logo upload area
+.logo-upload {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: theme('colors.gray.400');
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  &.drag-over {
+    border-color: theme('colors.blue.400');
+    background-color: rgba(59, 130, 246, 0.1);
+    transform: scale(1.02);
+  }
+}
+
+// Typography preview
+.font-preview {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
