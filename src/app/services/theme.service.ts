@@ -1,0 +1,71 @@
+import { Injectable, signal } from '@angular/core';
+import { Theme } from '../models/menu.models';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ThemeService {
+  private themes: Record<string, Theme> = {
+    neon: {
+      name: 'Neon Cyberpunk',
+      primary: '#00ff88',
+      secondary: '#ff0080',
+      accent: '#ffff00',
+      bg: 'from-gray-900 via-purple-900 to-violet-900',
+      text: 'text-white',
+      card: 'bg-gray-800/50 border-green-400/30'
+    },
+    sunset: {
+      name: 'Sunset Gradient',
+      primary: '#ff6b35',
+      secondary: '#f7931e',
+      accent: '#ffb627',
+      bg: 'from-orange-400 via-red-500 to-pink-500',
+      text: 'text-white',
+      card: 'bg-white/10 border-orange-300/30'
+    },
+    ocean: {
+      name: 'Deep Ocean',
+      primary: '#0ea5e9',
+      secondary: '#06b6d4',
+      accent: '#10b981',
+      bg: 'from-slate-900 via-blue-900 to-cyan-900',
+      text: 'text-white',
+      card: 'bg-slate-800/50 border-cyan-400/30'
+    },
+    forest: {
+      name: 'Forest Dark',
+      primary: '#22c55e',
+      secondary: '#16a34a',
+      accent: '#84cc16',
+      bg: 'from-green-900 via-emerald-900 to-teal-900',
+      text: 'text-white',
+      card: 'bg-green-800/50 border-green-400/30'
+    },
+    minimal: {
+      name: 'Minimal Black',
+      primary: '#000000',
+      secondary: '#404040',
+      accent: '#808080',
+      bg: 'from-gray-50 to-gray-100',
+      text: 'text-gray-900',
+      card: 'bg-white border-gray-300/50'
+    }
+  };
+
+  currentTheme = signal<string>('neon');
+
+  getThemes() {
+    return this.themes;
+  }
+
+  getCurrentTheme(): Theme {
+    return this.themes[this.currentTheme()];
+  }
+
+  setTheme(themeName: string) {
+    if (this.themes[themeName]) {
+      this.currentTheme.set(themeName);
+    }
+  }
+}
