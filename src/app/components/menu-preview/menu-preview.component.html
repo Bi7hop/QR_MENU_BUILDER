@@ -57,8 +57,8 @@
     <ng-template #noMenu>
       <div class="text-center py-16 text-white/50">
         <div class="text-6xl mb-4">🍽️</div>
-        <h3 class="text-xl font-semibold mb-2">No menu items yet</h3>
-        <p>Add some categories and items in the Builder to see your menu preview.</p>
+        <h3 class="text-xl font-semibold mb-2">Noch keine Menü-Einträge</h3>
+        <p>Fügen Sie im Editor Kategorien und Gerichte hinzu, um Ihr Menü zu erstellen.</p>
       </div>
     </ng-template>
   </div>
@@ -66,19 +66,10 @@
   <!-- Footer -->
   <div class="text-center p-6 border-t border-white/10 bg-black/20">
     <div class="flex items-center justify-center space-x-4 text-white/60 text-sm">
-      <span>Created with</span>
+      <span>Erstellt mit</span>
       <span class="font-bold text-green-400">MenuForge</span>
       <span>•</span>
-      <span>Digital Menu Creator</span>
+      <span>{{ getCurrentDateTime() }}</span>
     </div>
-  </div>
-
-  <!-- Debug Info -->
-  <div class="m-4 bg-black/30 rounded-lg p-3 text-xs text-white/70">
-    <div><strong>Restaurant:</strong> {{ restaurant().name }}</div>
-    <div><strong>Theme:</strong> {{ restaurant().theme }}</div>
-    <div><strong>Font:</strong> {{ restaurant().font }}</div>
-    <div><strong>Categories:</strong> {{ menuCategories().length }}</div>
-    <div><strong>Total Items:</strong> {{ getTotalItems() }}</div>
   </div>
 </div>
