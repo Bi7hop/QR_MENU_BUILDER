@@ -1,9 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-
-// Lucide Icons
-import { LucideAngularModule } from 'lucide-angular';
 
 // Services
 import { MenuService } from './services/menu.service';
@@ -22,7 +19,6 @@ import { QrGeneratorComponent } from './components/qr-generator/qr-generator.com
   imports: [
     CommonModule,
     RouterOutlet,
-    LucideAngularModule,
     MenuBuilderComponent,
     DesignCustomizerComponent,
     MenuPreviewComponent,
@@ -31,31 +27,39 @@ import { QrGeneratorComponent } from './components/qr-generator/qr-generator.com
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+  public menuService = inject(MenuService);
+  public themeService = inject(ThemeService);
+  public qrService = inject(QrCodeService);
+  private cdr = inject(ChangeDetectorRef);
+
   activeView = signal<string>('builder');
   isPreviewMode = signal<boolean>(false);
+  isInitialized = signal<boolean>(false);
 
   views = [
-    { id: 'builder', label: 'Builder', icon: 'edit-3' },
-    { id: 'preview', label: 'Preview', icon: 'eye' },
-    { id: 'qr', label: 'QR-Code', icon: 'qr-code' }
+    { id: 'builder', label: 'Editor', icon: '✏️' },
+    { id: 'preview', label: 'Vorschau', icon: '👁️' },
+    { id: 'qr', label: 'QR-Code', icon: '📱' }
   ];
 
-  constructor(
-    public menuService: MenuService,
-    public themeService: ThemeService,
-    public qrService: QrCodeService
-  ) {}
+  ngOnInit() {
+    const restaurant = this.menuService.restaurant();
+    this.themeService.setTheme(restaurant.theme);
+    
+    setTimeout(() => {
+      this.isInitialized.set(true);
+      this.cdr.detectChanges();
+    }, 100);
+  }
 
   currentTheme() {
     return this.themeService.getCurrentTheme();
   }
 
-  getViewButtonClass(viewId: string): string {
-    const baseClass = 'px-6 py-3 rounded-xl font-bold transition-all duration-300 capitalize flex items-center space-x-2 ';
-    return baseClass + (this.activeView() === viewId 
-      ? 'text-black shadow-2xl transform scale-105'
-      : this.currentTheme().text + ' hover:bg-white/10');
+  setActiveView(viewId: string) {
+    this.activeView.set(viewId);
+    this.cdr.detectChanges();
   }
 
   togglePreviewMode() {
