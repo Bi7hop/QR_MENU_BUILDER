@@ -1,20 +1,20 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularModule } from 'lucide-angular';
 import { MenuService } from '../../services/menu.service';
 import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-design-customizer',
   standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './design-customizer.component.html',
   styleUrl: './design-customizer.component.scss'
 })
 export class DesignCustomizerComponent implements OnInit {
   public menuService = inject(MenuService);
   public themeService = inject(ThemeService);
+  private cdr = inject(ChangeDetectorRef);
 
   restaurantName = signal('');
   restaurantDescription = signal('');
@@ -24,23 +24,22 @@ export class DesignCustomizerComponent implements OnInit {
   selectedFont = signal('Inter');
   selectedTheme = signal('neon');
 
-  // Themes als Array für einfache Iteration
   themesArray = [
     { key: 'neon', value: { name: 'Neon Cyberpunk', primary: '#00ff88', secondary: '#ff0080', accent: '#ffff00' } },
-    { key: 'sunset', value: { name: 'Sunset Gradient', primary: '#ff6b35', secondary: '#f7931e', accent: '#ffb627' } },
-    { key: 'ocean', value: { name: 'Deep Ocean', primary: '#0ea5e9', secondary: '#06b6d4', accent: '#10b981' } },
-    { key: 'forest', value: { name: 'Forest Dark', primary: '#22c55e', secondary: '#16a34a', accent: '#84cc16' } }
+    { key: 'sunset', value: { name: 'Sonnenuntergang', primary: '#ff6b35', secondary: '#f7931e', accent: '#ffb627' } },
+    { key: 'ocean', value: { name: 'Tiefer Ozean', primary: '#0ea5e9', secondary: '#06b6d4', accent: '#10b981' } },
+    { key: 'forest', value: { name: 'Dunkler Wald', primary: '#22c55e', secondary: '#16a34a', accent: '#84cc16' } }
   ];
 
   ngOnInit() {
-    // Daten beim Initialisieren laden
     this.loadInitialData();
   }
 
   private loadInitialData() {
     const restaurant = this.menuService.restaurant();
-    this.restaurantName.set(restaurant.name || 'VELOCITY');
-    this.restaurantDescription.set(restaurant.description || 'Modern Fusion Kitchen');
+    
+    this.restaurantName.set(restaurant.name || 'Mein Restaurant');
+    this.restaurantDescription.set(restaurant.description || 'Moderne Küche & Bar');
     this.selectedFont.set(restaurant.font || 'Inter');
     this.selectedTheme.set(restaurant.theme || 'neon');
     
@@ -48,8 +47,8 @@ export class DesignCustomizerComponent implements OnInit {
       this.restaurantLogo.set(restaurant.logo);
     }
 
-    // Theme Service initialisieren
     this.themeService.setTheme(this.selectedTheme());
+    this.cdr.detectChanges();
   }
 
   getCurrentTheme() {
@@ -60,6 +59,7 @@ export class DesignCustomizerComponent implements OnInit {
     this.selectedTheme.set(themeName);
     this.themeService.setTheme(themeName);
     this.menuService.updateRestaurant({ theme: themeName });
+    this.cdr.detectChanges();
   }
 
   updateRestaurantName(name: string) {
@@ -90,12 +90,16 @@ export class DesignCustomizerComponent implements OnInit {
         const result = e.target?.result as string;
         this.restaurantLogo.set(result);
         this.menuService.updateRestaurant({ logo: result });
+        this.cdr.detectChanges();
       };
       reader.readAsDataURL(input.files[0]);
     }
   }
 
-  // TrackBy functions für bessere Performance
+  applyChanges() {
+    this.cdr.detectChanges();
+  }
+
   trackByThemeKey(index: number, theme: any): string {
     return theme.key;
   }
