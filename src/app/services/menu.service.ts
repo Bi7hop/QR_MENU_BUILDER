@@ -7,8 +7,8 @@ import { MenuCategory, MenuItem, Restaurant } from '../models/menu.models';
 export class MenuService {
   // Signal-basierte State Management
   restaurant = signal<Restaurant>({
-    name: 'VELOCITY',
-    description: 'Modern Fusion Kitchen & Cocktail Bar',
+    name: 'Restaurant Beispiel',
+    description: 'Moderne Küche & Genuss',
     logo: undefined,
     theme: 'neon',
     customColors: {
@@ -21,20 +21,20 @@ export class MenuService {
   menuCategories = signal<MenuCategory[]>([
     {
       id: 1,
-      category: '🥗 STARTERS',
+      category: '🥗 VORSPEISEN',
       items: [
         {
           id: 1,
-          name: 'Truffle Arancini',
-          description: 'Crispy risotto balls with black truffle and parmesan',
+          name: 'Trüffel Arancini',
+          description: 'Knusprige Risotto-Bällchen mit schwarzem Trüffel und Parmesan',
           price: 16.00,
           image: undefined,
           featured: true
         },
         {
           id: 2,
-          name: 'Tuna Tataki',
-          description: 'Seared tuna with wasabi mayo and pickled ginger',
+          name: 'Thunfisch Tataki',
+          description: 'Kurz angebratener Thunfisch mit Wasabi-Mayo und eingelegtem Ingwer',
           price: 22.00,
           image: undefined,
           featured: false
@@ -43,20 +43,20 @@ export class MenuService {
     },
     {
       id: 2,
-      category: '🍖 MAINS',
+      category: '🍖 HAUPTSPEISEN',
       items: [
         {
           id: 3,
-          name: 'Wagyu Beef Brisket',
-          description: 'Slow-cooked for 24h with chimichurri and roasted vegetables',
+          name: 'Wagyu Rinderbrust',
+          description: '24h langsam gegart mit Chimichurri und geröstetem Gemüse',
           price: 38.00,
           image: undefined,
           featured: true
         },
         {
           id: 4,
-          name: 'Lobster Thermidor',
-          description: 'Classic French preparation with cognac and gruyère',
+          name: 'Hummer Thermidor',
+          description: 'Klassische französische Zubereitung mit Cognac und Gruyère',
           price: 45.00,
           image: undefined,
           featured: false
@@ -74,7 +74,7 @@ export class MenuService {
   addCategory() {
     const newCategory: MenuCategory = {
       id: Date.now(),
-      category: '📋 New Category',
+      category: '📋 Neue Kategorie',
       items: []
     };
     this.menuCategories.update(categories => [...categories, newCategory]);
@@ -102,8 +102,8 @@ export class MenuService {
   addItem(categoryId: number) {
     const newItem: MenuItem = {
       id: Date.now(),
-      name: 'New Dish',
-      description: 'Add description...',
+      name: 'Neues Gericht',
+      description: 'Beschreibung hinzufügen...',
       price: 0,
       image: undefined,
       featured: false
