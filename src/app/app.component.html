@@ -1,4 +1,7 @@
-<div [class]="'min-h-screen bg-gradient-to-br transition-all duration-1000 ' + currentTheme().bg">
+<div 
+  class="min-h-screen transition-all duration-1000"
+  [class]="'bg-gradient-to-br ' + currentTheme().bg"
+>
   <!-- Futuristic Header -->
   <header class="backdrop-blur-2xl bg-black/20 border-b border-white/10 shadow-2xl sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4">
@@ -11,7 +14,7 @@
               [style.borderColor]="currentTheme().secondary"
               [style.boxShadow]="'0 0 30px ' + currentTheme().primary + '40'"
             >
-              <lucide-icon name="qr-code" class="w-7 h-7 text-black"></lucide-icon>
+              <span class="text-2xl">📱</span>
             </div>
             <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
           </div>
@@ -19,19 +22,20 @@
             <h1 [class]="'text-3xl font-black tracking-tight ' + currentTheme().text">
               MENU<span [style.color]="currentTheme().primary">FORGE</span>
             </h1>
-            <p class="text-sm text-gray-300">Next-Gen Digital Menu Creator</p>
+            <p class="text-sm text-gray-300">Digitaler Menü-Generator der nächsten Generation</p>
           </div>
         </div>
         
         <div class="flex items-center space-x-2">
           <button
             *ngFor="let view of views"
-            (click)="activeView.set(view.id)"
-            [class]="getViewButtonClass(view.id)"
+            (click)="setActiveView(view.id)"
+            class="px-6 py-3 rounded-xl font-bold transition-all duration-300 capitalize flex items-center space-x-2"
             [style.backgroundColor]="activeView() === view.id ? currentTheme().primary : 'transparent'"
+            [style.color]="activeView() === view.id ? 'black' : 'white'"
             [style.boxShadow]="activeView() === view.id ? '0 0 30px ' + currentTheme().primary + '40' : 'none'"
           >
-            <lucide-icon [name]="view.icon" class="w-5 h-5"></lucide-icon>
+            <span class="text-lg">{{ view.icon }}</span>
             <span>{{ view.label }}</span>
           </button>
         </div>
@@ -43,21 +47,73 @@
     <!-- Builder View -->
     <div *ngIf="activeView() === 'builder'" class="grid grid-cols-1 xl:grid-cols-4 gap-8">
       <div class="xl:col-span-1">
-        <app-design-customizer></app-design-customizer>
+        <div 
+          class="backdrop-blur-xl rounded-2xl shadow-2xl border transition-all duration-500"
+          [class]="currentTheme().card"
+        >
+          <div class="p-4 border-b border-white/10">
+            <div class="flex items-center space-x-2">
+              <span class="text-xl">🎨</span>
+              <h2 [class]="'text-xl font-bold ' + currentTheme().text">Design Studio</h2>
+            </div>
+          </div>
+          <div class="p-6">
+            <app-design-customizer></app-design-customizer>
+          </div>
+        </div>
       </div>
       <div class="xl:col-span-3">
-        <app-menu-builder></app-menu-builder>
+        <div 
+          class="backdrop-blur-xl rounded-2xl shadow-2xl border transition-all duration-500"
+          [class]="currentTheme().card"
+        >
+          <div class="p-4 border-b border-white/10">
+            <div class="flex items-center space-x-2">
+              <span class="text-xl">🍽️</span>
+              <h2 [class]="'text-xl font-bold ' + currentTheme().text">Menü Builder</h2>
+            </div>
+          </div>
+          <div class="p-6">
+            <app-menu-builder></app-menu-builder>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Preview View -->
     <div *ngIf="activeView() === 'preview'" class="flex justify-center">
-      <app-menu-preview></app-menu-preview>
+      <div 
+        class="backdrop-blur-xl rounded-2xl shadow-2xl border max-w-4xl w-full transition-all duration-500"
+        [class]="currentTheme().card"
+      >
+        <div class="p-4 border-b border-white/10">
+          <div class="flex items-center space-x-2">
+            <span class="text-xl">👁️</span>
+            <h2 [class]="'text-xl font-bold ' + currentTheme().text">Menü Vorschau</h2>
+          </div>
+        </div>
+        <div class="p-6">
+          <app-menu-preview></app-menu-preview>
+        </div>
+      </div>
     </div>
 
     <!-- QR Generator View -->
     <div *ngIf="activeView() === 'qr'">
-      <app-qr-generator></app-qr-generator>
+      <div 
+        class="backdrop-blur-xl rounded-2xl shadow-2xl border transition-all duration-500"
+        [class]="currentTheme().card"
+      >
+        <div class="p-4 border-b border-white/10">
+          <div class="flex items-center space-x-2">
+            <span class="text-xl">📱</span>
+            <h2 [class]="'text-xl font-bold ' + currentTheme().text">QR-Code Generator</h2>
+          </div>
+        </div>
+        <div class="p-6">
+          <app-qr-generator></app-qr-generator>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -69,7 +125,7 @@
       [style.backgroundColor]="currentTheme().primary"
       [style.boxShadow]="'0 0 40px ' + currentTheme().primary + '60'"
     >
-      <lucide-icon [name]="isPreviewMode() ? 'edit-3' : 'eye'" class="w-8 h-8 text-black"></lucide-icon>
+      <span class="text-2xl text-black">{{ isPreviewMode() ? '✏️' : '👁️' }}</span>
     </button>
   </div>
 </div>
