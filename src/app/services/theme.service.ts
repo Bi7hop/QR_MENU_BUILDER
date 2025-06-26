@@ -16,7 +16,7 @@ export class ThemeService {
       card: 'bg-gray-800/50 border-green-400/30'
     },
     sunset: {
-      name: 'Sunset Gradient',
+      name: 'Sonnenuntergang',
       primary: '#ff6b35',
       secondary: '#f7931e',
       accent: '#ffb627',
@@ -25,7 +25,7 @@ export class ThemeService {
       card: 'bg-white/10 border-orange-300/30'
     },
     ocean: {
-      name: 'Deep Ocean',
+      name: 'Tiefer Ozean',
       primary: '#0ea5e9',
       secondary: '#06b6d4',
       accent: '#10b981',
@@ -34,7 +34,7 @@ export class ThemeService {
       card: 'bg-slate-800/50 border-cyan-400/30'
     },
     forest: {
-      name: 'Forest Dark',
+      name: 'Dunkler Wald',
       primary: '#22c55e',
       secondary: '#16a34a',
       accent: '#84cc16',
@@ -43,7 +43,7 @@ export class ThemeService {
       card: 'bg-green-800/50 border-green-400/30'
     },
     minimal: {
-      name: 'Minimal Black',
+      name: 'Minimal Schwarz',
       primary: '#000000',
       secondary: '#404040',
       accent: '#808080',
@@ -60,7 +60,8 @@ export class ThemeService {
   }
 
   getCurrentTheme(): Theme {
-    return this.themes[this.currentTheme()];
+    const themeName = this.currentTheme();
+    return this.themes[themeName];
   }
 
   setTheme(themeName: string) {
