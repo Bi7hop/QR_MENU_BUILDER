@@ -1,4 +1,4 @@
-<div class="space-y-6">
+<div class="space-y-4 sm:space-y-6">
   <!-- Restaurant Name -->
   <div class="space-y-2">
     <label [class]="'block text-sm font-medium ' + getCurrentTheme().text">🏪 Restaurant Name</label>
@@ -6,7 +6,7 @@
       type="text"
       [value]="restaurantName()"
       (input)="updateRestaurantName($any($event.target).value)"
-      class="w-full px-4 py-3 rounded-xl bg-black/20 border border-white/20 text-white placeholder-gray-400 transition-all duration-300 focus:border-green-400"
+      class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-black/20 border border-white/20 text-white placeholder-gray-400 transition-all duration-300 focus:border-green-400 text-sm sm:text-base"
       placeholder="Name des Restaurants eingeben..."
     />
   </div>
@@ -18,7 +18,7 @@
       [value]="restaurantDescription()"
       (input)="updateRestaurantDescription($any($event.target).value)"
       rows="3"
-      class="w-full px-4 py-3 rounded-xl bg-black/20 border border-white/20 text-white placeholder-gray-400 transition-all duration-300 resize-none focus:border-green-400"
+      class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-black/20 border border-white/20 text-white placeholder-gray-400 transition-all duration-300 resize-none focus:border-green-400 text-sm sm:text-base"
       placeholder="Beschreiben Sie Ihr Restaurant..."
     ></textarea>
   </div>
@@ -32,36 +32,36 @@
       <button
         *ngFor="let theme of themesArray; trackBy: trackByThemeKey"
         (click)="selectTheme(theme.key)"
-        class="w-full p-4 rounded-xl border-2 transition-all duration-300 text-left hover:scale-[1.02] group"
+        class="w-full p-3 sm:p-4 rounded-xl border-2 transition-all duration-300 text-left hover:scale-[1.02] group"
         [class]="selectedTheme() === theme.key ? 'border-white/60 shadow-2xl scale-[1.02]' : 'border-white/20 hover:border-white/40'"
         [style.background]="'linear-gradient(135deg, ' + theme.value.primary + 'E6, ' + theme.value.secondary + 'E6)'"
         [style.boxShadow]="selectedTheme() === theme.key ? '0 20px 40px rgba(0,0,0,0.3), 0 0 30px ' + theme.value.primary + '40' : 'none'"
       >
         <div class="flex items-center justify-between">
-          <div class="space-y-1">
-            <div class="text-white font-bold text-base">{{ theme.value.name }}</div>
+          <div class="space-y-1 min-w-0 flex-1">
+            <div class="text-white font-bold text-sm sm:text-base truncate">{{ theme.value.name }}</div>
             <div class="text-white/70 text-xs capitalize">{{ theme.key }} Stil</div>
           </div>
-          <div class="flex items-center space-x-3">
+          <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0 ml-2">
             <div class="flex space-x-1">
               <div 
-                class="w-4 h-4 rounded-full border border-white/30 shadow-sm" 
+                class="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-white/30 shadow-sm" 
                 [style.backgroundColor]="theme.value.primary"
               ></div>
               <div 
-                class="w-4 h-4 rounded-full border border-white/30 shadow-sm" 
+                class="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-white/30 shadow-sm" 
                 [style.backgroundColor]="theme.value.secondary"
               ></div>
               <div 
-                class="w-4 h-4 rounded-full border border-white/30 shadow-sm" 
+                class="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-white/30 shadow-sm" 
                 [style.backgroundColor]="theme.value.accent"
               ></div>
             </div>
             <div 
               *ngIf="selectedTheme() === theme.key" 
-              class="w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg"
+              class="w-5 h-5 sm:w-6 sm:h-6 bg-white rounded-full flex items-center justify-center shadow-lg"
             >
-              <span class="text-black text-sm font-bold">✓</span>
+              <span class="text-black text-xs sm:text-sm font-bold">✓</span>
             </div>
           </div>
         </div>
@@ -78,7 +78,7 @@
       <button
         *ngFor="let font of fonts; trackBy: trackByFont"
         (click)="updateFont(font)"
-        class="w-full p-4 rounded-xl border-2 text-left transition-all duration-300 hover:scale-[1.01] group"
+        class="w-full p-3 sm:p-4 rounded-xl border-2 text-left transition-all duration-300 hover:scale-[1.01] group"
         [class]="selectedFont() === font ? 
                 'border-white/60 shadow-xl scale-[1.01]' : 
                 'border-white/20 hover:border-white/40'"
@@ -87,16 +87,17 @@
         [style.boxShadow]="selectedFont() === font ? '0 10px 20px rgba(0,0,0,0.2), inset 0 0 20px rgba(255,255,255,0.1)' : 'none'"
       >
         <div class="flex items-center justify-between">
-          <div class="space-y-1">
-            <div [class]="'font-bold text-lg ' + getCurrentTheme().text">{{ font }}</div>
-            <div [class]="'text-sm opacity-70 ' + getCurrentTheme().text">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</div>
+          <div class="space-y-1 min-w-0 flex-1">
+            <div [class]="'font-bold text-base sm:text-lg ' + getCurrentTheme().text">{{ font }}</div>
+            <div [class]="'text-xs sm:text-sm opacity-70 ' + getCurrentTheme().text + ' hidden sm:block'">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</div>
+            <div [class]="'text-xs opacity-70 ' + getCurrentTheme().text + ' block sm:hidden'">Abc 123</div>
           </div>
           <div 
             *ngIf="selectedFont() === font" 
-            class="w-6 h-6 rounded-full flex items-center justify-center shadow-lg"
+            class="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center shadow-lg flex-shrink-0 ml-2"
             [style.backgroundColor]="getCurrentTheme().primary"
           >
-            <span class="text-black text-sm font-bold">✓</span>
+            <span class="text-black text-xs sm:text-sm font-bold">✓</span>
           </div>
         </div>
       </button>
@@ -110,33 +111,33 @@
     </label>
     <div 
       *ngIf="!restaurantLogo()"
-      class="w-full h-32 border-2 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 hover:scale-[1.01]"
+      class="w-full h-24 sm:h-32 border-2 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 hover:scale-[1.01]"
       [style.borderColor]="getCurrentTheme().primary + '50'"
       [style.backgroundColor]="'rgba(255,255,255,0.05)'"
       (click)="logoInput.click()"
     >
       <div 
-        class="w-12 h-12 rounded-full flex items-center justify-center mb-3"
+        class="w-8 h-8 sm:w-12 sm:h-12 rounded-full flex items-center justify-center mb-2 sm:mb-3"
         [style.backgroundColor]="getCurrentTheme().primary + '20'"
       >
-        <span class="text-2xl" [style.color]="getCurrentTheme().primary">📤</span>
+        <span class="text-lg sm:text-2xl" [style.color]="getCurrentTheme().primary">📤</span>
       </div>
-      <p [class]="'text-sm font-medium ' + getCurrentTheme().text">Klicken zum Logo hochladen</p>
+      <p [class]="'text-xs sm:text-sm font-medium text-center ' + getCurrentTheme().text">Klicken zum Logo hochladen</p>
       <p class="text-xs text-gray-400 mt-1">PNG, JPG bis zu 2MB</p>
     </div>
     
     <div 
       *ngIf="restaurantLogo()" 
-      class="relative rounded-xl overflow-hidden p-6 border-2 transition-all duration-300"
+      class="relative rounded-xl overflow-hidden p-4 sm:p-6 border-2 transition-all duration-300"
       [style.backgroundColor]="'rgba(255,255,255,0.05)'"
       [style.borderColor]="getCurrentTheme().primary + '30'"
     >
-      <img [src]="restaurantLogo()" alt="Restaurant Logo" class="w-full h-20 object-contain rounded-lg">
+      <img [src]="restaurantLogo()" alt="Restaurant Logo" class="w-full h-16 sm:h-20 object-contain rounded-lg">
       <button
         (click)="removeLogo()"
-        class="absolute top-2 right-2 w-8 h-8 bg-red-500/80 hover:bg-red-500 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+        class="absolute top-2 right-2 w-6 h-6 sm:w-8 sm:h-8 bg-red-500/80 hover:bg-red-500 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
       >
-        <span class="text-white">×</span>
+        <span class="text-white text-sm sm:text-base">×</span>
       </button>
     </div>
     
@@ -149,21 +150,41 @@
     />
   </div>
 
+  <!-- Status anzeigen -->
+  <div *ngIf="!appState.isMenuReady()" class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 sm:p-4">
+    <div class="flex items-center space-x-2">
+      <span class="text-yellow-500">⚠️</span>
+      <span class="text-yellow-500 font-medium text-sm sm:text-base">Änderungen müssen übernommen werden</span>
+    </div>
+    <p class="text-xs text-yellow-400 mt-1">Das Menü und der QR-Code sind nicht aktuell.</p>
+  </div>
+
   <!-- Apply Button -->
-  <div class="pt-6 border-t border-white/10">
+  <div class="pt-4 sm:pt-6 border-t border-white/10">
     <button
       (click)="applyChanges()"
-      class="w-full py-4 px-6 rounded-xl font-bold text-black transition-all duration-300 hover:scale-105 shadow-2xl group relative overflow-hidden"
+      [disabled]="isExporting()"
+      class="w-full py-3 sm:py-4 px-4 sm:px-6 rounded-xl font-bold text-black transition-all duration-300 hover:scale-105 shadow-2xl group relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
       [style.backgroundColor]="getCurrentTheme().primary"
       [style.boxShadow]="'0 10px 30px ' + getCurrentTheme().primary + '40, inset 0 1px 0 rgba(255,255,255,0.2)'"
     >
       <!-- Shine effect -->
       <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
       
-      <div class="flex items-center justify-center space-x-3 relative z-10">
-        <span class="text-base">✅ Änderungen übernehmen</span>
-        <span class="group-hover:translate-x-1 transition-transform duration-300">→</span>
+      <div class="flex items-center justify-center space-x-2 sm:space-x-3 relative z-10">
+        <span *ngIf="!isExporting()">✅ Änderungen übernehmen</span>
+        <span *ngIf="isExporting()">🔄 Menü wird exportiert...</span>
+        <span *ngIf="!isExporting()" class="group-hover:translate-x-1 transition-transform duration-300">→</span>
       </div>
     </button>
+  </div>
+
+  <!-- Success Message -->
+  <div *ngIf="exportSuccess()" class="bg-green-500/10 border border-green-500/30 rounded-xl p-3 sm:p-4 animate-pulse">
+    <div class="flex items-center space-x-2">
+      <span class="text-green-500">✅</span>
+      <span class="text-green-500 font-medium text-sm sm:text-base">Menü erfolgreich aktualisiert!</span>
+    </div>
+    <p class="text-xs text-green-400 mt-1">QR-Code und Vorschau sind jetzt verfügbar.</p>
   </div>
 </div>
