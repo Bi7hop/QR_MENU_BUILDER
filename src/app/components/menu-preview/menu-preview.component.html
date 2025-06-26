@@ -1,1 +1,84 @@
-<p>menu-preview works!</p>
+<div class="max-w-4xl mx-auto bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
+  <!-- Restaurant Header -->
+  <div class="text-center p-8 border-b border-white/10">
+    <div *ngIf="restaurant().logo" class="mb-4">
+      <img [src]="restaurant().logo" alt="Logo" class="w-24 h-24 mx-auto object-contain rounded-xl">
+    </div>
+    <h1 class="text-4xl font-bold text-white mb-2" [style.fontFamily]="restaurant().font">
+      {{ restaurant().name }}
+    </h1>
+    <p class="text-lg text-white/70" [style.fontFamily]="restaurant().font">
+      {{ restaurant().description }}
+    </p>
+  </div>
+
+  <!-- Menu Content -->
+  <div class="p-8">
+    <div *ngIf="menuCategories().length > 0; else noMenu" class="space-y-8">
+      <!-- Categories -->
+      <div *ngFor="let category of menuCategories(); trackBy: trackByCategory" class="space-y-4">
+        <div class="border-b border-white/20 pb-2">
+          <h2 class="text-2xl font-bold text-white" [style.fontFamily]="restaurant().font">
+            {{ category.category }}
+          </h2>
+        </div>
+
+        <!-- Items in Category -->
+        <div class="space-y-4">
+          <div
+            *ngFor="let item of category.items; trackBy: trackByItem"
+            class="flex justify-between items-start p-4 rounded-xl transition-all duration-300"
+            [class]="item.featured ? 'bg-green-400/10 border border-green-400/30' : 'bg-white/5 hover:bg-white/10'"
+          >
+            <div class="flex-1">
+              <div class="flex items-center space-x-2 mb-2">
+                <h3 class="text-lg font-semibold text-white" [style.fontFamily]="restaurant().font">
+                  {{ item.name }}
+                </h3>
+                <span *ngIf="item.featured" class="px-2 py-1 bg-green-400 text-black text-xs rounded-full font-bold">
+                  FEATURED
+                </span>
+              </div>
+              <p class="text-white/70 text-sm leading-relaxed" [style.fontFamily]="restaurant().font">
+                {{ item.description }}
+              </p>
+            </div>
+            <div class="ml-4 text-right">
+              <div class="text-xl font-bold text-green-400" [style.fontFamily]="restaurant().font">
+                €{{ item.price.toFixed(2) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Menu Template -->
+    <ng-template #noMenu>
+      <div class="text-center py-16 text-white/50">
+        <div class="text-6xl mb-4">🍽️</div>
+        <h3 class="text-xl font-semibold mb-2">No menu items yet</h3>
+        <p>Add some categories and items in the Builder to see your menu preview.</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Footer -->
+  <div class="text-center p-6 border-t border-white/10 bg-black/20">
+    <div class="flex items-center justify-center space-x-4 text-white/60 text-sm">
+      <span>Created with</span>
+      <span class="font-bold text-green-400">MenuForge</span>
+      <span>•</span>
+      <span>Digital Menu Creator</span>
+    </div>
+  </div>
+
+  <!-- Debug Info -->
+  <div class="m-4 bg-black/30 rounded-lg p-3 text-xs text-white/70">
+    <div><strong>Restaurant:</strong> {{ restaurant().name }}</div>
+    <div><strong>Theme:</strong> {{ restaurant().theme }}</div>
+    <div><strong>Font:</strong> {{ restaurant().font }}</div>
+    <div><strong>Categories:</strong> {{ menuCategories().length }}</div>
+    <div><strong>Total Items:</strong> {{ getTotalItems() }}</div>
+  </div>
+</div>
