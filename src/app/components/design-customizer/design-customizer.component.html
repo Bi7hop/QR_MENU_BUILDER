@@ -1,198 +1,169 @@
-<div [class]="'rounded-2xl shadow-2xl border transition-all duration-500 ' + getCurrentTheme().card + ' backdrop-blur-xl'">
-  <!-- Header -->
-  <div class="p-6 border-b border-white/10">
-    <div class="flex items-center space-x-3">
-      <div 
-        class="w-8 h-8 rounded-lg flex items-center justify-center"
-        [style.backgroundColor]="getCurrentTheme().primary"
-      >
-        <lucide-icon name="paintbrush" class="w-5 h-5 text-black"></lucide-icon>
-      </div>
-      <h2 [class]="'text-xl font-bold ' + getCurrentTheme().text">Design Studio</h2>
-    </div>
+<div class="space-y-6">
+  <!-- Restaurant Name -->
+  <div class="space-y-2">
+    <label [class]="'block text-sm font-medium ' + getCurrentTheme().text">🏪 Restaurant Name</label>
+    <input
+      type="text"
+      [value]="restaurantName()"
+      (input)="updateRestaurantName($any($event.target).value)"
+      class="w-full px-4 py-3 rounded-xl bg-black/20 border border-white/20 text-white placeholder-gray-400 transition-all duration-300 focus:border-green-400"
+      placeholder="Name des Restaurants eingeben..."
+    />
   </div>
 
-  <div class="p-6 space-y-8">
-    <!-- Restaurant Branding -->
-    <div class="space-y-4">
-      <h3 [class]="'text-lg font-semibold flex items-center space-x-2 ' + getCurrentTheme().text">
-        <lucide-icon name="coffee" class="w-5 h-5"></lucide-icon>
-        <span>Restaurant Branding</span>
-      </h3>
-      
-      <!-- Restaurant Name -->
-      <div class="space-y-2">
-        <label [class]="'block text-sm font-medium ' + getCurrentTheme().text">Restaurant Name</label>
-        <input
-          type="text"
-          [value]="restaurantName()"
-          (input)="updateRestaurantName($any($event.target).value)"
-          class="w-full px-4 py-3 rounded-xl bg-black/20 border border-white/20 text-white placeholder-gray-400 focus:border-white/40 transition-all duration-300"
-          placeholder="Enter restaurant name..."
-        />
-      </div>
+  <!-- Restaurant Description -->
+  <div class="space-y-2">
+    <label [class]="'block text-sm font-medium ' + getCurrentTheme().text">📝 Beschreibung</label>
+    <textarea
+      [value]="restaurantDescription()"
+      (input)="updateRestaurantDescription($any($event.target).value)"
+      rows="3"
+      class="w-full px-4 py-3 rounded-xl bg-black/20 border border-white/20 text-white placeholder-gray-400 transition-all duration-300 resize-none focus:border-green-400"
+      placeholder="Beschreiben Sie Ihr Restaurant..."
+    ></textarea>
+  </div>
 
-      <!-- Restaurant Description -->
-      <div class="space-y-2">
-        <label [class]="'block text-sm font-medium ' + getCurrentTheme().text">Description</label>
-        <textarea
-          [value]="restaurantDescription()"
-          (input)="updateRestaurantDescription($any($event.target).value)"
-          rows="3"
-          class="w-full px-4 py-3 rounded-xl bg-black/20 border border-white/20 text-white placeholder-gray-400 focus:border-white/40 transition-all duration-300 resize-none"
-          placeholder="Describe your restaurant..."
-        ></textarea>
-      </div>
-
-      <!-- Logo Upload -->
-      <div class="space-y-2">
-        <label [class]="'block text-sm font-medium ' + getCurrentTheme().text">Logo</label>
-        <div class="relative">
-          <div 
-            *ngIf="!restaurantLogo()"
-            class="w-full h-32 border-2 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 hover:scale-[1.01]"
-            [style.borderColor]="getCurrentTheme().primary + '50'"
-            [style.backgroundColor]="'rgba(255,255,255,0.05)'"
-            (click)="logoInput.click()"
-          >
-            <div 
-              class="w-12 h-12 rounded-full flex items-center justify-center mb-3"
-              [style.backgroundColor]="getCurrentTheme().primary + '20'"
-            >
-              <lucide-icon name="upload" class="w-6 h-6" [style.color]="getCurrentTheme().primary"></lucide-icon>
-            </div>
-            <p [class]="'text-sm font-medium ' + getCurrentTheme().text">Click to upload logo</p>
-            <p class="text-xs text-gray-400 mt-1">PNG, JPG up to 2MB</p>
-          </div>
-          
-          <div 
-            *ngIf="restaurantLogo()" 
-            class="relative rounded-xl overflow-hidden p-6 border-2 transition-all duration-300"
-            [style.backgroundColor]="'rgba(255,255,255,0.05)'"
-            [style.borderColor]="getCurrentTheme().primary + '30'"
-          >
-            <img [src]="restaurantLogo()" alt="Restaurant Logo" class="w-full h-20 object-contain rounded-lg">
-            <button
-              (click)="removeLogo()"
-              class="absolute top-2 right-2 w-8 h-8 bg-red-500/80 hover:bg-red-500 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
-            >
-              <lucide-icon name="x" class="w-4 h-4 text-white"></lucide-icon>
-            </button>
-          </div>
-          
-          <input
-            #logoInput
-            type="file"
-            accept="image/*"
-            (change)="onFileSelected($event)"
-            class="hidden"
-          />
-        </div>
-      </div>
-    </div>
-
-    <!-- Theme Selection -->
-    <div class="space-y-4">
-      <h3 [class]="'text-lg font-semibold flex items-center space-x-2 ' + getCurrentTheme().text">
-        <lucide-icon name="palette" class="w-5 h-5"></lucide-icon>
-        <span>Color Themes</span>
-      </h3>
-      
-      <div class="space-y-3">
-        <button
-          *ngFor="let theme of themesArray; trackBy: trackByThemeKey"
-          (click)="selectTheme(theme.key)"
-          class="relative w-full p-4 rounded-xl border-2 transition-all duration-300 hover:scale-[1.02] text-left group"
-          [class]="selectedTheme() === theme.key ? 'border-white/60 shadow-2xl scale-[1.02]' : 'border-white/20 hover:border-white/40'"
-          [style.background]="'linear-gradient(135deg, ' + theme.value.primary + 'E6, ' + theme.value.secondary + 'E6)'"
-          [style.boxShadow]="selectedTheme() === theme.key ? '0 20px 40px rgba(0,0,0,0.3), 0 0 30px ' + theme.value.primary + '40' : 'none'"
-        >
-          <div class="flex items-center justify-between">
-            <div class="space-y-1">
-              <div class="font-bold text-white text-base">{{ theme.value.name }}</div>
-              <div class="text-xs text-white/70 capitalize">{{ theme.key }} Style</div>
-            </div>
-            <div class="flex items-center space-x-3">
-              <!-- Color Preview Circles -->
-              <div class="flex space-x-1">
-                <div 
-                  class="w-4 h-4 rounded-full border border-white/30 shadow-sm" 
-                  [style.backgroundColor]="theme.value.primary"
-                ></div>
-                <div 
-                  class="w-4 h-4 rounded-full border border-white/30 shadow-sm" 
-                  [style.backgroundColor]="theme.value.secondary"
-                ></div>
-                <div 
-                  class="w-4 h-4 rounded-full border border-white/30 shadow-sm" 
-                  [style.backgroundColor]="theme.value.accent"
-                ></div>
-              </div>
-              <!-- Check Mark -->
-              <div 
-                *ngIf="selectedTheme() === theme.key" 
-                class="w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg"
-              >
-                <lucide-icon name="check" class="w-4 h-4 text-black"></lucide-icon>
-              </div>
-            </div>
-          </div>
-        </button>
-      </div>
-    </div>
-
-    <!-- Typography -->
-    <div class="space-y-4">
-      <h3 [class]="'text-lg font-semibold flex items-center space-x-2 ' + getCurrentTheme().text">
-        <lucide-icon name="type" class="w-5 h-5"></lucide-icon>
-        <span>Typography</span>
-      </h3>
-      
-      <div class="space-y-3">
-        <button
-          *ngFor="let font of fonts; trackBy: trackByFont"
-          (click)="updateFont(font)"
-          class="w-full p-4 rounded-xl border-2 text-left transition-all duration-300 hover:scale-[1.01] group"
-          [class]="selectedFont() === font ? 
-                  'border-white/60 shadow-xl scale-[1.01]' : 
-                  'border-white/20 hover:border-white/40'"
-          [style.fontFamily]="font"
-          [style.backgroundColor]="selectedFont() === font ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.05)'"
-          [style.boxShadow]="selectedFont() === font ? '0 10px 20px rgba(0,0,0,0.2), inset 0 0 20px rgba(255,255,255,0.1)' : 'none'"
-        >
-          <div class="flex items-center justify-between">
-            <div class="space-y-1">
-              <div [class]="'font-bold text-lg ' + getCurrentTheme().text">{{ font }}</div>
-              <div [class]="'text-sm opacity-70 ' + getCurrentTheme().text">The quick brown fox jumps</div>
-            </div>
-            <div 
-              *ngIf="selectedFont() === font" 
-              class="w-6 h-6 rounded-full flex items-center justify-center shadow-lg"
-              [style.backgroundColor]="getCurrentTheme().primary"
-            >
-              <lucide-icon name="check" class="w-4 h-4 text-black"></lucide-icon>
-            </div>
-          </div>
-        </button>
-      </div>
-    </div>
-
-    <!-- Preview Button -->
-    <div class="pt-6 border-t border-white/10">
+  <!-- Theme Selection -->
+  <div class="space-y-3">
+    <label [class]="'block text-sm font-medium ' + getCurrentTheme().text">
+      🎨 Farbthema
+    </label>
+    <div class="space-y-2">
       <button
-        class="w-full py-4 px-6 rounded-xl font-bold text-black transition-all duration-300 hover:scale-105 shadow-2xl group relative overflow-hidden"
-        [style.backgroundColor]="getCurrentTheme().primary"
-        [style.boxShadow]="'0 10px 30px ' + getCurrentTheme().primary + '40, inset 0 1px 0 rgba(255,255,255,0.2)'"
+        *ngFor="let theme of themesArray; trackBy: trackByThemeKey"
+        (click)="selectTheme(theme.key)"
+        class="w-full p-4 rounded-xl border-2 transition-all duration-300 text-left hover:scale-[1.02] group"
+        [class]="selectedTheme() === theme.key ? 'border-white/60 shadow-2xl scale-[1.02]' : 'border-white/20 hover:border-white/40'"
+        [style.background]="'linear-gradient(135deg, ' + theme.value.primary + 'E6, ' + theme.value.secondary + 'E6)'"
+        [style.boxShadow]="selectedTheme() === theme.key ? '0 20px 40px rgba(0,0,0,0.3), 0 0 30px ' + theme.value.primary + '40' : 'none'"
       >
-        <!-- Shine effect -->
-        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-        
-        <div class="flex items-center justify-center space-x-3 relative z-10">
-          <lucide-icon name="eye" class="w-5 h-5"></lucide-icon>
-          <span class="text-base">Preview Changes</span>
-          <lucide-icon name="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300"></lucide-icon>
+        <div class="flex items-center justify-between">
+          <div class="space-y-1">
+            <div class="text-white font-bold text-base">{{ theme.value.name }}</div>
+            <div class="text-white/70 text-xs capitalize">{{ theme.key }} Stil</div>
+          </div>
+          <div class="flex items-center space-x-3">
+            <div class="flex space-x-1">
+              <div 
+                class="w-4 h-4 rounded-full border border-white/30 shadow-sm" 
+                [style.backgroundColor]="theme.value.primary"
+              ></div>
+              <div 
+                class="w-4 h-4 rounded-full border border-white/30 shadow-sm" 
+                [style.backgroundColor]="theme.value.secondary"
+              ></div>
+              <div 
+                class="w-4 h-4 rounded-full border border-white/30 shadow-sm" 
+                [style.backgroundColor]="theme.value.accent"
+              ></div>
+            </div>
+            <div 
+              *ngIf="selectedTheme() === theme.key" 
+              class="w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg"
+            >
+              <span class="text-black text-sm font-bold">✓</span>
+            </div>
+          </div>
         </div>
       </button>
     </div>
+  </div>
+
+  <!-- Font Selection -->
+  <div class="space-y-3">
+    <label [class]="'block text-sm font-medium ' + getCurrentTheme().text">
+      ✍️ Schriftart
+    </label>
+    <div class="space-y-2">
+      <button
+        *ngFor="let font of fonts; trackBy: trackByFont"
+        (click)="updateFont(font)"
+        class="w-full p-4 rounded-xl border-2 text-left transition-all duration-300 hover:scale-[1.01] group"
+        [class]="selectedFont() === font ? 
+                'border-white/60 shadow-xl scale-[1.01]' : 
+                'border-white/20 hover:border-white/40'"
+        [style.fontFamily]="font"
+        [style.backgroundColor]="selectedFont() === font ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.05)'"
+        [style.boxShadow]="selectedFont() === font ? '0 10px 20px rgba(0,0,0,0.2), inset 0 0 20px rgba(255,255,255,0.1)' : 'none'"
+      >
+        <div class="flex items-center justify-between">
+          <div class="space-y-1">
+            <div [class]="'font-bold text-lg ' + getCurrentTheme().text">{{ font }}</div>
+            <div [class]="'text-sm opacity-70 ' + getCurrentTheme().text">Franz jagt im komplett verwahrlosten Taxi quer durch Bayern</div>
+          </div>
+          <div 
+            *ngIf="selectedFont() === font" 
+            class="w-6 h-6 rounded-full flex items-center justify-center shadow-lg"
+            [style.backgroundColor]="getCurrentTheme().primary"
+          >
+            <span class="text-black text-sm font-bold">✓</span>
+          </div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Logo Upload -->
+  <div class="space-y-2">
+    <label [class]="'block text-sm font-medium ' + getCurrentTheme().text">
+      📷 Logo
+    </label>
+    <div 
+      *ngIf="!restaurantLogo()"
+      class="w-full h-32 border-2 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 hover:scale-[1.01]"
+      [style.borderColor]="getCurrentTheme().primary + '50'"
+      [style.backgroundColor]="'rgba(255,255,255,0.05)'"
+      (click)="logoInput.click()"
+    >
+      <div 
+        class="w-12 h-12 rounded-full flex items-center justify-center mb-3"
+        [style.backgroundColor]="getCurrentTheme().primary + '20'"
+      >
+        <span class="text-2xl" [style.color]="getCurrentTheme().primary">📤</span>
+      </div>
+      <p [class]="'text-sm font-medium ' + getCurrentTheme().text">Klicken zum Logo hochladen</p>
+      <p class="text-xs text-gray-400 mt-1">PNG, JPG bis zu 2MB</p>
+    </div>
+    
+    <div 
+      *ngIf="restaurantLogo()" 
+      class="relative rounded-xl overflow-hidden p-6 border-2 transition-all duration-300"
+      [style.backgroundColor]="'rgba(255,255,255,0.05)'"
+      [style.borderColor]="getCurrentTheme().primary + '30'"
+    >
+      <img [src]="restaurantLogo()" alt="Restaurant Logo" class="w-full h-20 object-contain rounded-lg">
+      <button
+        (click)="removeLogo()"
+        class="absolute top-2 right-2 w-8 h-8 bg-red-500/80 hover:bg-red-500 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+      >
+        <span class="text-white">×</span>
+      </button>
+    </div>
+    
+    <input
+      #logoInput
+      type="file"
+      accept="image/*"
+      (change)="onFileSelected($event)"
+      class="hidden"
+    />
+  </div>
+
+  <!-- Apply Button -->
+  <div class="pt-6 border-t border-white/10">
+    <button
+      (click)="applyChanges()"
+      class="w-full py-4 px-6 rounded-xl font-bold text-black transition-all duration-300 hover:scale-105 shadow-2xl group relative overflow-hidden"
+      [style.backgroundColor]="getCurrentTheme().primary"
+      [style.boxShadow]="'0 10px 30px ' + getCurrentTheme().primary + '40, inset 0 1px 0 rgba(255,255,255,0.2)'"
+    >
+      <!-- Shine effect -->
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+      
+      <div class="flex items-center justify-center space-x-3 relative z-10">
+        <span class="text-base">✅ Änderungen übernehmen</span>
+        <span class="group-hover:translate-x-1 transition-transform duration-300">→</span>
+      </div>
+    </button>
   </div>
 </div>
