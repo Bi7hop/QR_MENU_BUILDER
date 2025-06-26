@@ -20,6 +20,8 @@ export class QrCodeService {
     } = {}
   ): Promise<string> {
     try {
+      const errorCorrectionLevel = text.length > 1000 ? 'L' : 'M';
+      
       const qrOptions = {
         width: options.width || 400,
         margin: options.margin || 2,
@@ -27,24 +29,46 @@ export class QrCodeService {
           dark: options.color?.dark || '#000000',
           light: options.color?.light || '#FFFFFF'
         },
-        errorCorrectionLevel: 'M' as const
+        errorCorrectionLevel: errorCorrectionLevel as any
       };
 
-      // Basis QR-Code generieren
       const qrDataUrl = await QRCode.toDataURL(text, qrOptions);
 
-      // Falls Logo vorhanden, kombinieren
       if (options.logoUrl) {
-        const combinedQR = await this.addLogoToQR(qrDataUrl, options.logoUrl, options.width || 400);
-        this.qrCodeDataUrl.set(combinedQR);
-        return combinedQR;
+        try {
+          const combinedQR = await this.addLogoToQR(qrDataUrl, options.logoUrl, options.width || 400);
+          this.qrCodeDataUrl.set(combinedQR);
+          return combinedQR;
+        } catch (logoError) {
+          this.qrCodeDataUrl.set(qrDataUrl);
+          return qrDataUrl;
+        }
       }
 
       this.qrCodeDataUrl.set(qrDataUrl);
       return qrDataUrl;
+      
     } catch (error) {
-      console.error('QR Code generation failed:', error);
-      throw error;
+      if (text.startsWith('data:')) {
+        try {
+          const fallbackUrl = 'https://menuforge.app/view?data=compressed';
+          const fallbackQR = await QRCode.toDataURL(fallbackUrl, {
+            width: options.width || 400,
+            margin: options.margin || 2,
+            color: {
+              dark: options.color?.dark || '#000000',
+              light: options.color?.light || '#FFFFFF'
+            },
+            errorCorrectionLevel: 'M' as any
+          });
+          this.qrCodeDataUrl.set(fallbackQR);
+          return fallbackQR;
+        } catch (fallbackError) {
+          // Stillschweigend fehlschlagen
+        }
+      }
+      
+      throw new Error(`QR-Code Generierung fehlgeschlagen: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`);
     }
   }
 
@@ -54,7 +78,7 @@ export class QrCodeService {
       const ctx = canvas.getContext('2d');
       
       if (!ctx) {
-        reject(new Error('Canvas context not available'));
+        reject(new Error('Canvas nicht verfügbar'));
         return;
       }
 
@@ -63,34 +87,45 @@ export class QrCodeService {
 
       const qrImage = new Image();
       qrImage.onload = () => {
-        // QR Code zeichnen
         ctx.drawImage(qrImage, 0, 0, size, size);
 
-        // Logo laden und zeichnen
         const logoImage = new Image();
         logoImage.onload = () => {
-          const logoSize = size * 0.2;
+          const logoSize = size * 0.15;
           const logoX = (size - logoSize) / 2;
           const logoY = (size - logoSize) / 2;
 
-          // Weißer Hintergrund für Logo
+          const padding = logoSize * 0.1;
           ctx.fillStyle = '#ffffff';
-          ctx.fillRect(logoX - 5, logoY - 5, logoSize + 10, logoSize + 10);
+          ctx.fillRect(
+            logoX - padding, 
+            logoY - padding, 
+            logoSize + (padding * 2), 
+            logoSize + (padding * 2)
+          );
 
-          // Logo zeichnen
           ctx.drawImage(logoImage, logoX, logoY, logoSize, logoSize);
-
           resolve(canvas.toDataURL());
         };
-        logoImage.onerror = () => resolve(qrDataUrl); // Fallback ohne Logo
+        
+        logoImage.onerror = () => {
+          resolve(qrDataUrl);
+        };
+        
         logoImage.src = logoUrl;
       };
-      qrImage.onerror = () => reject(new Error('QR Code image loading failed'));
+      
+      qrImage.onerror = () => {
+        reject(new Error('QR-Code Bild konnte nicht geladen werden'));
+      };
+      
       qrImage.src = qrDataUrl;
     });
   }
 
   downloadQRCode(filename: string = 'qr-code.png') {
+    if (!this.qrCodeDataUrl()) return;
+    
     const link = document.createElement('a');
     link.download = filename;
     link.href = this.qrCodeDataUrl();
