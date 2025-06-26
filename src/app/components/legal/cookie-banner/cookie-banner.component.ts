@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LegalService } from '../../../services/legal.service';
+import { LegalService, LegalSettings } from '../../../services/legal.service';
 import { ThemeService } from '../../../services/theme.service';
 
 @Component({
@@ -31,9 +31,8 @@ import { ThemeService } from '../../../services/theme.service';
                   Cookies und lokale Speicherung
                 </h3>
                 <p class="text-gray-300 text-sm leading-relaxed">
-                  MenuForge nutzt ausschließlich <strong>technisch notwendige</strong> lokale Speicherung in Ihrem Browser, 
-                  um Ihre Menü-Daten und Einstellungen zu speichern. Diese Daten verlassen nie Ihr Gerät und werden 
-                  <strong>nicht an uns übertragen</strong>. Keine Tracking-Cookies, keine Analyse-Tools.
+                  MenuForge nutzt technisch notwendige Cookies.
+                  Wähle hier aus, ob Du optionale Analytics- oder Marketing-Cookies zulassen möchtest.
                 </p>
                 <div class="flex flex-wrap gap-2 mt-2">
                   <span class="inline-flex items-center px-2 py-1 bg-green-500/20 text-green-400 rounded-lg text-xs">
@@ -49,14 +48,20 @@ import { ThemeService } from '../../../services/theme.service';
               </div>
             </div>
             
-            <!-- Buttons -->
+            <!-- Aktionen: Details und Auswahl -->
             <div class="flex flex-col sm:flex-row gap-3 lg:flex-shrink-0">
               <button
                 (click)="showDetails()"
                 class="px-4 py-2 text-sm border border-white/30 text-white rounded-lg hover:bg-white/10 transition-all duration-300 flex items-center space-x-2"
               >
                 <span>📄</span>
-                <span>Details anzeigen</span>
+                <span>{{ showDetailedInfo() ? 'Details verbergen' : 'Details anzeigen' }}</span>
+              </button>
+              <button
+                (click)="acceptEssentialOnly()"
+                class="px-4 py-2 text-sm border border-white/30 text-white rounded-lg hover:bg-white/10 transition-all duration-300"
+              >
+                Nur notwendige
               </button>
               <button
                 (click)="acceptAll()"
@@ -64,12 +69,12 @@ import { ThemeService } from '../../../services/theme.service';
                 [style.backgroundColor]="getCurrentTheme().primary"
               >
                 <span>✓</span>
-                <span>Akzeptieren</span>
+                <span>Alle akzeptieren</span>
               </button>
             </div>
           </div>
 
-          <!-- Details Bereich (ausklappbar) -->
+          <!-- Details Bereich -->
           <div 
             *ngIf="showDetailedInfo()"
             class="mt-6 pt-6 border-t border-white/20 space-y-4 animate-fade-in"
@@ -122,34 +127,16 @@ import { ThemeService } from '../../../services/theme.service';
   `,
   styles: [`
     @keyframes slide-up {
-      from {
-        transform: translateY(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
+      from { transform: translateY(100%); opacity: 0; }
+      to   { transform: translateY(0);       opacity: 1; }
     }
-    
     @keyframes fade-in {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0);     }
     }
-    
-    .animate-slide-up {
-      animation: slide-up 0.5s ease-out;
-    }
-    
-    .animate-fade-in {
-      animation: fade-in 0.3s ease-out;
-    }
+    .animate-slide-up { animation: slide-up 0.5s ease-out; }
+    .animate-fade-in  { animation: fade-in 0.3s ease-out; }
+    .form-checkbox { width: 1rem; height: 1rem; accent-color: var(--tw-prose-pre-bg, #4ade80); }
   `]
 })
 export class CookieBannerComponent {
@@ -157,6 +144,7 @@ export class CookieBannerComponent {
   private themeService = inject(ThemeService);
   
   showDetailedInfo = signal(false);
+  settings        = this.legalService.legalSettings;
 
   shouldShow(): boolean {
     return this.legalService.shouldShowCookieBanner();
@@ -166,11 +154,30 @@ export class CookieBannerComponent {
     return this.themeService.getCurrentTheme();
   }
 
-  acceptAll() {
-    this.legalService.acceptCookies();
+  /** Nur notwendige Cookies */
+  acceptEssentialOnly(): void {
+    this.legalService.acceptEssentialOnly();
   }
 
-  showDetails() {
+  /** Alle Cookies akzeptieren */
+  acceptAll(): void {
+    this.legalService.acceptAll();
+  }
+
+  /** Details anzeigen/verbergen */
+  showDetails(): void {
     this.showDetailedInfo.update(current => !current);
+  }
+
+  /** Toggle für optionale Cookies */
+  toggle(type: 'analytics' | 'marketing'): void {
+    const s = this.settings();
+    const updates: Partial<LegalSettings> = {};
+    if (type === 'analytics') {
+      updates.analyticsAccepted = !s.analyticsAccepted;
+    } else {
+      updates.marketingAccepted = !s.marketingAccepted;
+    }
+    this.legalService.updateLegalSettings(updates);
   }
 }
