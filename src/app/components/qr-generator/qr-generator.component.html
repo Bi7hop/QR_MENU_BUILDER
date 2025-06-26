@@ -1,1 +1,120 @@
-<p>qr-generator works!</p>
+<div class="max-w-2xl mx-auto space-y-6 sm:space-y-8">
+  <!-- Header -->
+  <div class="text-center">
+    <div class="flex items-center justify-center space-x-2 mb-4">
+      <span class="text-xl sm:text-2xl">📱</span>
+      <h3 [class]="'text-xl sm:text-2xl font-bold ' + getCurrentTheme().text">QR-Code für Ihr Menü</h3>
+    </div>
+    
+    <div *ngIf="!getMenuStatus().isReady" class="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 sm:p-6">
+      <div class="flex items-center justify-center space-x-2 mb-3">
+        <span class="text-yellow-500">⚠️</span>
+        <span class="text-yellow-500 font-medium text-sm sm:text-base">Noch kein Menü verfügbar</span>
+      </div>
+      <p class="text-yellow-400 text-xs sm:text-sm">Erstellen Sie erst Ihr Menü im Editor und klicken Sie auf "Änderungen übernehmen".</p>
+    </div>
+  </div>
+
+  <!-- QR-Code Anzeige -->
+  <div class="flex justify-center">
+    <div 
+      class="p-4 sm:p-8 rounded-2xl border-2 transition-all duration-300 bg-white w-full max-w-sm"
+      [style.borderColor]="getCurrentTheme().primary + '40'"
+    >
+      <div *ngIf="qrCodeDataUrl(); else noQrCode" class="text-center">
+        <img 
+          [src]="qrCodeDataUrl()" 
+          [alt]="'QR-Code für ' + restaurant().name + ' Menü'"
+          class="mx-auto rounded-lg shadow-lg w-full max-w-xs"
+          style="aspect-ratio: 1/1;"
+        />
+        <div class="mt-3 sm:mt-4 space-y-1 sm:space-y-2">
+          <p class="text-xs sm:text-sm text-gray-600 font-medium truncate">{{ restaurant().name }}</p>
+          <p class="text-xs text-gray-500">Digitales Menü • {{ getCurrentDateTime() }}</p>
+        </div>
+      </div>
+      
+      <ng-template #noQrCode>
+        <div class="aspect-square flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
+          <div class="text-center p-4">
+            <span class="text-4xl sm:text-6xl mb-2 sm:mb-4 block text-gray-400">📱</span>
+            <p class="text-gray-500 text-sm sm:text-lg font-medium">QR-Code wird erstellt...</p>
+            <p class="text-gray-400 text-xs sm:text-sm mt-1 sm:mt-2">Bitte warten</p>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- URL Anzeige -->
+  <div *ngIf="getMenuStatus().isReady" class="bg-black/20 rounded-xl p-4 sm:p-6">
+    <h4 class="font-semibold text-white text-sm mb-3 flex items-center space-x-2">
+      <span>🔗</span>
+      <span>Menü-Link:</span>
+    </h4>
+    <div class="bg-black/30 rounded-lg p-3 mb-4">
+      <code class="text-green-400 text-xs sm:text-sm break-all block">{{ getShareableUrl() }}</code>
+    </div>
+    <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+      <button
+        (click)="copyUrl()"
+        class="flex-1 px-3 sm:px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs sm:text-sm rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+      >
+        <span>📋</span>
+        <span>Link kopieren</span>
+      </button>
+      <button
+        (click)="openPreview()"
+        class="flex-1 px-3 sm:px-4 py-2 border border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white text-xs sm:text-sm rounded-lg transition-all duration-300 flex items-center justify-center space-x-2"
+      >
+        <span>👁️</span>
+        <span>Vorschau öffnen</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Download Buttons -->
+  <div *ngIf="qrCodeDataUrl()" class="space-y-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+      <button
+        (click)="downloadQR('png')"
+        class="px-3 sm:px-4 py-4 sm:py-3 rounded-xl font-bold text-black transition-all duration-300 hover:scale-105 flex flex-col items-center space-y-1 sm:space-y-2"
+        [style.backgroundColor]="getCurrentTheme().primary"
+      >
+        <span class="text-xl sm:text-2xl">💾</span>
+        <span class="text-xs sm:text-sm">PNG Download</span>
+      </button>
+      
+      <button
+        (click)="downloadQR('svg')"
+        class="px-3 sm:px-4 py-4 sm:py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105 border-2 flex flex-col items-center space-y-1 sm:space-y-2"
+        [style.borderColor]="getCurrentTheme().primary"
+        [style.color]="getCurrentTheme().primary"
+      >
+        <span class="text-xl sm:text-2xl">📄</span>
+        <span class="text-xs sm:text-sm">SVG Download</span>
+      </button>
+      
+      <button
+        (click)="printQR()"
+        class="px-3 sm:px-4 py-4 sm:py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105 border-2 flex flex-col items-center space-y-1 sm:space-y-2 sm:col-span-1 col-span-1"
+        [style.borderColor]="getCurrentTheme().secondary"
+        [style.color]="getCurrentTheme().secondary"
+      >
+        <span class="text-xl sm:text-2xl">🖨️</span>
+        <span class="text-xs sm:text-sm">Drucken</span>
+      </button>
+    </div>
+    
+    <!-- Anweisungen -->
+    <div class="bg-black/20 rounded-xl p-4 sm:p-6">
+      <h4 class="font-semibold text-white text-sm mb-3">💡 Verwendung:</h4>
+      <ul class="text-xs text-gray-400 space-y-1 sm:space-y-2">
+        <li>• <strong>PNG:</strong> Für digitale Verwendung (Website, E-Mail, soziale Medien)</li>
+        <li>• <strong>SVG:</strong> Für professionellen Druck (Flyer, Plakate, Aufsteller)</li>
+        <li>• <strong>Drucken:</strong> Direkt aus dem Browser drucken</li>
+        <li>• <strong>Mindestgröße beim Druck:</strong> 3x3 cm für gute Lesbarkeit</li>
+      </ul>
+    </div>
+  </div>
+</div>
