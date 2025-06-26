@@ -1,43 +1,43 @@
-<div class="space-y-6">
+<div class="space-y-4 sm:space-y-6">
   <!-- Add Category Button -->
-  <div class="flex justify-between items-center">
-    <h3 class="text-lg font-semibold text-white">Menu Categories</h3>
+  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+    <h3 class="text-base sm:text-lg font-semibold text-white">Menu Kategorien</h3>
     <button
       (click)="addCategory()"
-      class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all duration-300 flex items-center space-x-2"
+      class="w-full sm:w-auto px-4 py-2 sm:py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 text-sm sm:text-base"
     >
-      <span class="text-xl">+</span>
-      <span>Add Category</span>
+      <span class="text-lg sm:text-xl">+</span>
+      <span>Kategorie hinzufügen</span>
     </button>
   </div>
 
   <!-- Categories List -->
-  <div class="space-y-4">
+  <div class="space-y-3 sm:space-y-4">
     <div
       *ngFor="let category of menuCategories(); trackBy: trackByCategory"
-      class="bg-white/5 rounded-xl p-4 border border-white/10"
+      class="bg-white/5 rounded-xl p-3 sm:p-4 border border-white/10"
     >
       <!-- Category Header -->
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4">
         <input
           type="text"
           [value]="category.category"
           (input)="updateCategory(category.id, { category: $any($event.target).value })"
-          class="text-lg font-bold bg-transparent text-white border-none outline-none focus:bg-white/10 rounded px-2 py-1"
-          placeholder="Category Name"
+          class="flex-1 text-base sm:text-lg font-bold bg-transparent text-white border-none outline-none focus:bg-white/10 rounded px-2 py-1 placeholder-gray-400"
+          placeholder="Kategorie Name"
         />
         <div class="flex items-center space-x-2">
           <button
             (click)="addItem(category.id)"
-            class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded transition-all duration-300"
+            class="flex-1 sm:flex-none px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-xs sm:text-sm rounded transition-all duration-300"
           >
-            + Item
+            + Gericht
           </button>
           <button
             (click)="removeCategory(category.id)"
-            class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm rounded transition-all duration-300"
+            class="flex-1 sm:flex-none px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs sm:text-sm rounded transition-all duration-300"
           >
-            Delete
+            Löschen
           </button>
         </div>
       </div>
@@ -48,76 +48,75 @@
           *ngFor="let item of category.items; trackBy: trackByItem"
           class="bg-white/5 rounded-lg p-3 border border-white/10"
         >
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <!-- Item Name -->
-            <div>
-              <label class="block text-xs text-white/70 mb-1">Item Name</label>
-              <input
-                type="text"
-                [value]="item.name"
-                (input)="updateItem(category.id, item.id, { name: $any($event.target).value })"
-                class="w-full bg-white/10 text-white rounded px-3 py-2 text-sm border border-white/20 focus:border-green-400"
-                placeholder="Dish name"
-              />
-            </div>
+          <div class="space-y-3">
+            <!-- Item Name and Price Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs text-white/70 mb-1">Gericht Name</label>
+                <input
+                  type="text"
+                  [value]="item.name"
+                  (input)="updateItem(category.id, item.id, { name: $any($event.target).value })"
+                  class="w-full bg-white/10 text-white rounded px-3 py-2 text-sm border border-white/20 focus:border-green-400"
+                  placeholder="Name des Gerichts"
+                />
+              </div>
 
-            <!-- Price -->
-            <div>
-              <label class="block text-xs text-white/70 mb-1">Price</label>
-              <input
-                type="number"
-                [value]="item.price"
-                (input)="updateItem(category.id, item.id, { price: +$any($event.target).value })"
-                class="w-full bg-white/10 text-white rounded px-3 py-2 text-sm border border-white/20 focus:border-green-400"
-                placeholder="0.00"
-                min="0"
-                step="0.01"
-              />
-            </div>
-
-            <!-- Actions -->
-            <div class="flex items-end">
-              <div class="flex items-center space-x-2">
-                <label class="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    [checked]="item.featured"
-                    (change)="updateItem(category.id, item.id, { featured: $any($event.target).checked })"
-                    class="rounded"
-                  />
-                  <span class="text-xs text-white/70">Featured</span>
-                </label>
-                <button
-                  (click)="removeItem(category.id, item.id)"
-                  class="px-2 py-1 bg-red-500 hover:bg-red-600 text-white text-xs rounded"
-                >
-                  ×
-                </button>
+              <div>
+                <label class="block text-xs text-white/70 mb-1">Preis</label>
+                <input
+                  type="number"
+                  [value]="item.price"
+                  (input)="updateItem(category.id, item.id, { price: +$any($event.target).value })"
+                  class="w-full bg-white/10 text-white rounded px-3 py-2 text-sm border border-white/20 focus:border-green-400"
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                />
               </div>
             </div>
-          </div>
 
-          <!-- Description -->
-          <div class="mt-3">
-            <label class="block text-xs text-white/70 mb-1">Description</label>
-            <textarea
-              [value]="item.description"
-              (input)="updateItem(category.id, item.id, { description: $any($event.target).value })"
-              class="w-full bg-white/10 text-white rounded px-3 py-2 text-sm border border-white/20 focus:border-green-400 resize-none"
-              rows="2"
-              placeholder="Dish description..."
-            ></textarea>
+            <!-- Description -->
+            <div>
+              <label class="block text-xs text-white/70 mb-1">Beschreibung</label>
+              <textarea
+                [value]="item.description"
+                (input)="updateItem(category.id, item.id, { description: $any($event.target).value })"
+                class="w-full bg-white/10 text-white rounded px-3 py-2 text-sm border border-white/20 focus:border-green-400 resize-none"
+                rows="2"
+                placeholder="Beschreibung des Gerichts..."
+              ></textarea>
+            </div>
+
+            <!-- Actions Row -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <label class="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  [checked]="item.featured"
+                  (change)="updateItem(category.id, item.id, { featured: $any($event.target).checked })"
+                  class="rounded"
+                />
+                <span class="text-xs text-white/70">Featured Gericht</span>
+              </label>
+              <button
+                (click)="removeItem(category.id, item.id)"
+                class="w-full sm:w-auto px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs rounded transition-all duration-300"
+              >
+                Gericht löschen
+              </button>
+            </div>
           </div>
         </div>
 
         <!-- No Items Message -->
-        <div *ngIf="category.items.length === 0" class="text-center py-8 text-white/50">
-          <p>No items in this category yet.</p>
+        <div *ngIf="category.items.length === 0" class="text-center py-6 sm:py-8 text-white/50">
+          <p class="text-sm">Noch keine Gerichte in dieser Kategorie.</p>
           <button
             (click)="addItem(category.id)"
-            class="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all duration-300"
+            class="mt-3 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all duration-300 text-sm"
           >
-            Add First Item
+            Erstes Gericht hinzufügen
           </button>
         </div>
       </div>
@@ -125,20 +124,14 @@
   </div>
 
   <!-- No Categories Message -->
-  <div *ngIf="menuCategories().length === 0" class="text-center py-12 text-white/50">
-    <h3 class="text-xl font-semibold mb-4">No menu categories yet</h3>
-    <p class="mb-6">Start building your menu by adding your first category.</p>
+  <div *ngIf="menuCategories().length === 0" class="text-center py-8 sm:py-12 text-white/50">
+    <h3 class="text-lg sm:text-xl font-semibold mb-4">Noch keine Menü-Kategorien</h3>
+    <p class="mb-6 text-sm sm:text-base">Beginnen Sie mit der Erstellung Ihres Menüs, indem Sie Ihre erste Kategorie hinzufügen.</p>
     <button
       (click)="addCategory()"
       class="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all duration-300 font-medium"
     >
-      Create First Category
+      Erste Kategorie erstellen
     </button>
-  </div>
-
-  <!-- Debug Info -->
-  <div class="mt-8 bg-black/30 rounded-lg p-3 text-xs text-white/70">
-    <div><strong>Categories:</strong> {{ menuCategories().length }}</div>
-    <div><strong>Total Items:</strong> {{ getTotalItems() }}</div>
   </div>
 </div>
