@@ -2,181 +2,315 @@
   display: block;
 }
 
-// CDK Drag & Drop Styling - Korrigiert
-.cdk-drop-list {
-  display: block;
-}
-
-.cdk-drag {
-  position: relative;
-  z-index: 1;
-  transition: all 250ms cubic-bezier(0.25, 0.8, 0.25, 1);
-  
-  // Verbesserte Drag-Behandlung - versteckt das Original-Element während Drag
-  &.cdk-drag-dragging {
-    z-index: 1000;
-    // Versteckt das ursprüngliche Element komplett während des Drags
-    opacity: 0 !important;
-    visibility: hidden !important;
-    transform: scale(0) !important;
-    pointer-events: none !important;
+// Drag & Drop nur auf Desktop aktivieren
+.drag-enabled {
+  .cdk-drop-list {
+    display: block;
   }
-}
 
-.cdk-drag:hover:not(.cdk-drag-dragging) {
-  transform: scale(1.01);
-  z-index: 2;
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder):not(.cdk-drag-dragging) {
-  transition: transform 250ms cubic-bezier(0.25, 0.8, 0.25, 1);
-  opacity: 0.6;
-}
-
-// Drag Handle Styling
-[cdkDragHandle] {
-  color: rgba(255, 255, 255, 0.4);
-  cursor: grab;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    color: rgba(255, 255, 255, 0.8);
-    background-color: rgba(255, 255, 255, 0.1);
-    transform: scale(1.1);
+  .cdk-drag {
+    position: relative;
+    z-index: 1;
+    transition: all 250ms cubic-bezier(0.25, 0.8, 0.25, 1);
+    
+    // Verbesserte Drag-Behandlung - versteckt das Original-Element während Drag
+    &.cdk-drag-dragging {
+      z-index: 1000;
+      // Versteckt das ursprüngliche Element komplett während des Drags
+      opacity: 0 !important;
+      visibility: hidden !important;
+      transform: scale(0) !important;
+      pointer-events: none !important;
+    }
   }
-  
-  &:active {
-    cursor: grabbing;
-    color: rgba(255, 255, 255, 1);
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-}
 
-// Placeholder Styling während Drag - Verbessert
-.cdk-drag-placeholder {
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px dashed rgba(255, 255, 255, 0.3);
-  border-radius: 12px;
-  min-height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.7;
-  
-  // Wichtig: Bleibt innerhalb Container-Grenzen
-  max-width: 100%;
-  overflow: hidden;
-  box-sizing: border-box;
-  
-  &::before {
-    content: '📍 Hier ablegen';
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.875rem;
-    font-weight: 500;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  .cdk-drag:hover:not(.cdk-drag-dragging) {
+    transform: scale(1.01);
+    z-index: 2;
+  }
+
+  .cdk-drag-animating {
+    transition: transform 250ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  .cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder):not(.cdk-drag-dragging) {
+    transition: transform 250ms cubic-bezier(0.25, 0.8, 0.25, 1);
+    opacity: 0.6;
+  }
+
+  // Drag Handle Styling
+  [cdkDragHandle] {
+    color: rgba(255, 255, 255, 0.4);
+    cursor: grab;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      color: rgba(255, 255, 255, 0.8);
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: scale(1.1);
+    }
+    
+    &:active {
+      cursor: grabbing;
+      color: rgba(255, 255, 255, 1);
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  // Placeholder Styling während Drag - Verbessert
+  .cdk-drag-placeholder {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    
+    // Wichtig: Bleibt innerhalb Container-Grenzen
+    max-width: 100%;
     overflow: hidden;
-  }
-  
-  // Spezielle Placeholder für Kategorien
-  &.category-placeholder {
-    min-height: 80px;
-    background: rgba(34, 197, 94, 0.1);
-    border-color: rgba(34, 197, 94, 0.3);
+    box-sizing: border-box;
     
     &::before {
-      content: '📋 Kategorie hier ablegen';
-      color: rgba(34, 197, 94, 0.8);
+      content: '📍 Hier ablegen';
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.875rem;
+      font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    
+    // Spezielle Placeholder für Kategorien
+    &.category-placeholder {
+      min-height: 80px;
+      background: rgba(34, 197, 94, 0.1);
+      border-color: rgba(34, 197, 94, 0.3);
+      
+      &::before {
+        content: '📋 Kategorie hier ablegen';
+        color: rgba(34, 197, 94, 0.8);
+      }
     }
   }
-}
 
-// Drop Zone Highlighting
-.cdk-drop-list-receiving {
-  background: rgba(59, 130, 246, 0.1);
-  border: 2px solid rgba(59, 130, 246, 0.3);
-  border-radius: 12px;
-}
-
-// Preview beim Draggen - Optimiert für Container-Grenzen
-.cdk-drag-preview {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  z-index: 1001;
-  
-  // Wichtig: Keine Transform-Überschreibungen!
-  background: rgba(255, 255, 255, 0.98) !important;
-  border: 2px solid rgba(59, 130, 246, 0.8) !important;
-  opacity: 1 !important;
-  
-  // Verhindert Überlauf aus Container - Standard für Items
-  max-width: 250px !important;
-  min-width: 180px !important;
-  max-height: 120px !important;
-  overflow: hidden !important;
-  
-  // Einfache Einblendung ohne Position-Störung
-  animation: none;
-  transition: none;
-  
-  // Bessere Lesbarkeit und Abgrenzung
-  backdrop-filter: blur(10px);
-  
-  // Verhindert Text-Überlauf
-  word-wrap: break-word;
-  text-overflow: ellipsis;
-  
-  // Standard-Padding
-  padding: 12px !important;
-  font-size: 0.875rem !important;
-}
-
-// Spezielle Styles für Kategorie-Previews - Sehr kompakt
-.cdk-drag-preview.category-preview {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(240, 249, 255, 0.98)) !important;
-  border: 2px solid rgba(34, 197, 94, 0.8) !important;
-  
-  // Sehr kompakte Darstellung für Kategorien
-  max-width: 200px !important;
-  max-height: 80px !important;
-  min-width: 150px !important;
-  padding: 8px !important;
-  
-  // Kleinere Schrift für Kategorien
-  font-size: 0.75rem !important;
-  
-  .category-icon {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    animation: none; // Entfernt Animation für kompaktere Darstellung
-    flex-shrink: 0;
-    width: 24px !important;
-    height: 24px !important;
+  // Drop Zone Highlighting
+  .cdk-drop-list-receiving {
+    background: rgba(59, 130, 246, 0.1);
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    border-radius: 12px;
   }
-  
-  // Mobile Anpassung für Kategorien
-  @media (max-width: 768px) {
-    max-width: 160px !important;
-    max-height: 70px !important;
-    font-size: 0.7rem !important;
+
+  // Preview beim Draggen - Optimiert für Container-Grenzen
+  .cdk-drag-preview {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    z-index: 1001;
+    
+    // Wichtig: Keine Transform-Überschreibungen!
+    background: rgba(255, 255, 255, 0.98) !important;
+    border: 2px solid rgba(59, 130, 246, 0.8) !important;
+    opacity: 1 !important;
+    
+    // Verhindert Überlauf aus Container - Standard für Items
+    max-width: 250px !important;
+    min-width: 180px !important;
+    max-height: 120px !important;
+    overflow: hidden !important;
+    
+    // Einfache Einblendung ohne Position-Störung
+    animation: none;
+    transition: none;
+    
+    // Bessere Lesbarkeit und Abgrenzung
+    backdrop-filter: blur(10px);
+    
+    // Verhindert Text-Überlauf
+    word-wrap: break-word;
+    text-overflow: ellipsis;
+    
+    // Standard-Padding
+    padding: 12px !important;
+    font-size: 0.875rem !important;
+  }
+
+  // Spezielle Styles für Kategorie-Previews - Sehr kompakt
+  .cdk-drag-preview.category-preview {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(240, 249, 255, 0.98)) !important;
+    border: 2px solid rgba(34, 197, 94, 0.8) !important;
+    
+    // Sehr kompakte Darstellung für Kategorien
+    max-width: 200px !important;
+    max-height: 80px !important;
+    min-width: 150px !important;
+    padding: 8px !important;
+    
+    // Kleinere Schrift für Kategorien
+    font-size: 0.75rem !important;
     
     .category-icon {
-      width: 20px !important;
-      height: 20px !important;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      animation: none; // Entfernt Animation für kompaktere Darstellung
+      flex-shrink: 0;
+      width: 24px !important;
+      height: 24px !important;
+    }
+  }
+
+  // Spezielle Styles für Item-Previews  
+  .cdk-drag-preview.item-preview {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(249, 250, 251, 0.98)) !important;
+    border: 2px solid rgba(59, 130, 246, 0.8) !important;
+    
+    // Kompaktere Item-Darstellung
+    max-height: 140px !important;
+  }
+}
+
+// Mobile-spezifische Styles
+@media (max-width: 767px) {
+  // Drag & Drop komplett deaktivieren
+  .cdk-drag {
+    transform: none !important;
+    transition: none !important;
+    cursor: default !important;
+    
+    &:hover {
+      transform: none !important;
+    }
+    
+    &.cdk-drag-dragging {
+      opacity: 1 !important;
+      visibility: visible !important;
+      transform: none !important;
+      pointer-events: auto !important;
+    }
+  }
+  
+  [cdkDragHandle] {
+    display: none !important; // Drag Handles verstecken
+  }
+  
+  .cdk-drag-preview {
+    display: none !important; // Previews verstecken
+  }
+  
+  .cdk-drag-placeholder {
+    display: none !important; // Placeholders verstecken
+  }
+  
+  // Mobile Sortier-Buttons
+  .mobile-sort-buttons {
+    min-width: 32px;
+    
+    button {
+      min-height: 44px; // Touch-friendly
+      min-width: 44px;
+      font-size: 16px;
+      font-weight: bold;
+      
+      &:active {
+        transform: scale(0.95);
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
+  
+  // Icon Picker auf Mobile
+  .icon-picker-container {
+    .absolute {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      width: 90vw !important;
+      max-width: 300px !important;
+      z-index: 1000;
+      
+      .grid {
+        grid-template-columns: repeat(5, 1fr) !important; // Mehr Icons pro Zeile
+        gap: 8px !important;
+      }
+      
+      button {
+        min-height: 44px !important;
+        min-width: 44px !important;
+      }
+    }
+  }
+  
+  // Input-Felder auf Mobile
+  input, textarea {
+    font-size: 16px !important; // Verhindert Zoom auf iOS
+    min-height: 44px;
+    
+    &:focus {
+      outline: 2px solid rgba(34, 197, 94, 0.5);
+      outline-offset: 2px;
+    }
+  }
+  
+  // Touch-Feedback
+  button {
+    position: relative;
+    overflow: hidden;
+    
+    &:active::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100px;
+      height: 100px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      animation: ripple 0.3s ease-out;
     }
   }
 }
 
-// Spezielle Styles für Item-Previews  
-.cdk-drag-preview.item-preview {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(249, 250, 251, 0.98)) !important;
-  border: 2px solid rgba(59, 130, 246, 0.8) !important;
+  // Desktop-spezifische Verbesserungen
+@media (min-width: 768px) {
+  // Hover-Effekte nur auf Desktop
+  .category:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
   
-  // Kompaktere Item-Darstellung
-  max-height: 140px !important;
+  .item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  // Keyboard Navigation Hints
+  .keyboard-hint {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    
+    &.show {
+      opacity: 1;
+    }
+  }
+}
+
+// Ripple-Effekt Animation
+@keyframes ripple {
+  to {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
 }
 
 @keyframes pulse {
@@ -230,31 +364,6 @@
   border-radius: 12px;
 }
 
-// Mobile Touch Optimierungen
-@media (max-width: 768px) {
-  [cdkDragHandle] {
-    min-width: 44px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .cdk-drag-placeholder {
-    min-height: 80px;
-    
-    &::before {
-      content: '👆 Hier ablegen';
-      font-size: 1rem;
-    }
-  }
-  
-  .cdk-drag-preview {
-    transform: none !important;
-    max-width: 280px;
-  }
-}
-
 // Container-Begrenzungen für besseres Drag-Verhalten
 .menu-content {
   position: relative;
@@ -267,7 +376,7 @@
 }
 
 // Verhindert, dass Drag-Previews außerhalb des Viewports gehen
-.cdk-drag-preview {
+.drag-enabled .cdk-drag-preview {
   // ... bestehende Styles ...
   
   // Wichtig: Bounds-Checking
@@ -293,6 +402,49 @@
   &:hover {
     border-color: rgba(34, 197, 94, 0.5);
     box-shadow: 0 8px 25px rgba(34, 197, 94, 0.2);
+  }
+}
+
+// Toast-Feedback Styling
+.mobile-feedback-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 1000;
+  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+  transform: translateX(100%);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  
+  &.show {
+    transform: translateX(0);
+  }
+  
+  &.hide {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  
+  @media (max-width: 640px) {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    font-size: 13px;
+    padding: 10px 14px;
+    transform: translateY(-100%);
+    
+    &.show {
+      transform: translateY(0);
+    }
+    
+    &.hide {
+      transform: translateY(-100%);
+    }
   }
 }
 
@@ -366,9 +518,176 @@ input:focus, textarea:focus {
   }
 }
 
+// Smooth transitions für Sort-Operationen
+.item, .category {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.item.moved, .category.moved {
+  background: rgba(34, 197, 94, 0.2) !important;
+  border-color: rgba(34, 197, 94, 0.5) !important;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3) !important;
+  
+  animation: moveHighlight 1s ease-out;
+}
+
+@keyframes moveHighlight {
+  0% {
+    background: rgba(34, 197, 94, 0.4);
+    transform: scale(1.02);
+  }
+  100% {
+    background: rgba(34, 197, 94, 0.1);
+    transform: scale(1);
+  }
+}
+
 // Smooth Scroll Behavior für Container
 .menu-content {
   scroll-behavior: smooth;
+}
+
+// Touch-Gesten Feedback
+.swipe-hint {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  
+  &.show {
+    opacity: 1;
+  }
+}
+
+// Prevent text selection during sorting
+.sorting-active {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+// Extra small screens breakpoint (für sehr kleine Displays)
+@media (max-width: 480px) {
+  // Category headers
+  .category {
+    margin-bottom: 16px;
+  }
+  
+  // Button sizing für sehr kleine Screens
+  button {
+    min-height: 32px;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+  
+  // Icon picker positioning
+  .icon-picker-container .absolute {
+    right: -50px;
+    min-width: 180px;
+    
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  // Input fields in items
+  .item input[type="text"],
+  .item input[type="number"],
+  .item textarea {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+  
+  // Drag handles
+  [cdkDragHandle] {
+    min-width: 32px;
+    min-height: 32px;
+    padding: 6px;
+  }
+}
+
+// Medium screens - optimiertes Layout
+@media (min-width: 481px) and (max-width: 768px) {
+  .category .flex.items-center {
+    gap: 8px;
+  }
+  
+  button {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// Container overflow prevention
+.category {
+  overflow: hidden;
+  word-wrap: break-word;
+  
+  // Verhindert dass Inhalte aus dem Container laufen
+  * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+// Button container responsive behavior
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-end;
+  
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+// Text truncation für sehr kleine Screens
+@media (max-width: 380px) {
+  .category input[type="text"] {
+    font-size: 14px;
+  }
+  
+  .item-name input {
+    font-size: 13px;
+  }
+  
+  .item-description textarea {
+    font-size: 12px;
+    rows: 1;
+  }
+}
+
+// Touch-friendly interactive elements
+@media (hover: none) and (pointer: coarse) {
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  [cdkDragHandle] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  input, textarea {
+    font-size: 16px; // Prevents zoom on iOS
+  }
 }
 
 // Accessibility Improvements
@@ -379,7 +698,10 @@ input:focus, textarea:focus {
   button,
   input,
   textarea,
-  .new-category-highlight {
+  .new-category-highlight,
+  .mobile-feedback-toast,
+  .item,
+  .category {
     transition: none !important;
     animation: none !important;
   }
@@ -406,5 +728,28 @@ input:focus, textarea:focus {
   
   .new-category-highlight {
     border-color: #ffffff !important;
+  }
+  
+  .mobile-sort-buttons button {
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    background: rgba(0, 0, 0, 0.9) !important;
+    color: white !important;
+  }
+  
+  .mobile-feedback-toast {
+    border: 2px solid white;
+    background: #000 !important;
+  }
+}
+
+// Dark Mode Anpassungen
+@media (prefers-color-scheme: dark) {
+  .icon-picker-container .absolute {
+    background: #1f2937 !important;
+    border-color: #374151 !important;
+  }
+  
+  .mobile-feedback-toast {
+    background: linear-gradient(135deg, #059669, #047857) !important;
   }
 }
