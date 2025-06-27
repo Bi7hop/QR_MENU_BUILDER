@@ -1,0 +1,374 @@
+:host {
+  display: block;
+}
+
+// CDK Drag & Drop Styling - Korrigiert
+.cdk-drop-list {
+  display: block;
+}
+
+.cdk-drag {
+  position: relative;
+  z-index: 1;
+  transition: all 250ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  
+  // Verbesserte Drag-Behandlung - versteckt das Original-Element während Drag
+  &.cdk-drag-dragging {
+    z-index: 1000;
+    // Versteckt das ursprüngliche Element komplett während des Drags
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: scale(0) !important;
+    pointer-events: none !important;
+  }
+}
+
+.cdk-drag:hover:not(.cdk-drag-dragging) {
+  transform: scale(1.01);
+  z-index: 2;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder):not(.cdk-drag-dragging) {
+  transition: transform 250ms cubic-bezier(0.25, 0.8, 0.25, 1);
+  opacity: 0.6;
+}
+
+// Drag Handle Styling
+[cdkDragHandle] {
+  color: rgba(255, 255, 255, 0.4);
+  cursor: grab;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+  }
+  
+  &:active {
+    cursor: grabbing;
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+// Placeholder Styling während Drag - Verbessert
+.cdk-drag-placeholder {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  
+  // Wichtig: Bleibt innerhalb Container-Grenzen
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  
+  &::before {
+    content: '📍 Hier ablegen';
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  
+  // Spezielle Placeholder für Kategorien
+  &.category-placeholder {
+    min-height: 80px;
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.3);
+    
+    &::before {
+      content: '📋 Kategorie hier ablegen';
+      color: rgba(34, 197, 94, 0.8);
+    }
+  }
+}
+
+// Drop Zone Highlighting
+.cdk-drop-list-receiving {
+  background: rgba(59, 130, 246, 0.1);
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
+}
+
+// Preview beim Draggen - Optimiert für Container-Grenzen
+.cdk-drag-preview {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  z-index: 1001;
+  
+  // Wichtig: Keine Transform-Überschreibungen!
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 2px solid rgba(59, 130, 246, 0.8) !important;
+  opacity: 1 !important;
+  
+  // Verhindert Überlauf aus Container - Standard für Items
+  max-width: 250px !important;
+  min-width: 180px !important;
+  max-height: 120px !important;
+  overflow: hidden !important;
+  
+  // Einfache Einblendung ohne Position-Störung
+  animation: none;
+  transition: none;
+  
+  // Bessere Lesbarkeit und Abgrenzung
+  backdrop-filter: blur(10px);
+  
+  // Verhindert Text-Überlauf
+  word-wrap: break-word;
+  text-overflow: ellipsis;
+  
+  // Standard-Padding
+  padding: 12px !important;
+  font-size: 0.875rem !important;
+}
+
+// Spezielle Styles für Kategorie-Previews - Sehr kompakt
+.cdk-drag-preview.category-preview {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(240, 249, 255, 0.98)) !important;
+  border: 2px solid rgba(34, 197, 94, 0.8) !important;
+  
+  // Sehr kompakte Darstellung für Kategorien
+  max-width: 200px !important;
+  max-height: 80px !important;
+  min-width: 150px !important;
+  padding: 8px !important;
+  
+  // Kleinere Schrift für Kategorien
+  font-size: 0.75rem !important;
+  
+  .category-icon {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    animation: none; // Entfernt Animation für kompaktere Darstellung
+    flex-shrink: 0;
+    width: 24px !important;
+    height: 24px !important;
+  }
+  
+  // Mobile Anpassung für Kategorien
+  @media (max-width: 768px) {
+    max-width: 160px !important;
+    max-height: 70px !important;
+    font-size: 0.7rem !important;
+    
+    .category-icon {
+      width: 20px !important;
+      height: 20px !important;
+    }
+  }
+}
+
+// Spezielle Styles für Item-Previews  
+.cdk-drag-preview.item-preview {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(249, 250, 251, 0.98)) !important;
+  border: 2px solid rgba(59, 130, 246, 0.8) !important;
+  
+  // Kompaktere Item-Darstellung
+  max-height: 140px !important;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+// Kategorie Drag Styling
+.category-drag-handle {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.3), transparent);
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+  }
+}
+
+// Item Drag Styling
+.item-drag-handle {
+  border-left: 2px solid transparent;
+  transition: border-color 0.2s ease;
+  
+  &:hover {
+    border-left-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+// Drop List States
+.cdk-drop-list.can-drop {
+  border: 2px dashed rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.05);
+  border-radius: 12px;
+}
+
+.cdk-drop-list.cannot-drop {
+  border: 2px dashed rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.05);
+  border-radius: 12px;
+}
+
+// Mobile Touch Optimierungen
+@media (max-width: 768px) {
+  [cdkDragHandle] {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .cdk-drag-placeholder {
+    min-height: 80px;
+    
+    &::before {
+      content: '👆 Hier ablegen';
+      font-size: 1rem;
+    }
+  }
+  
+  .cdk-drag-preview {
+    transform: none !important;
+    max-width: 280px;
+  }
+}
+
+// Container-Begrenzungen für besseres Drag-Verhalten
+.menu-content {
+  position: relative;
+  overflow: hidden; // Verhindert Überlauf während Drag
+  
+  // Während Drag: Beschränkt sichtbaren Bereich
+  &.drag-active {
+    overflow: hidden !important;
+  }
+}
+
+// Verhindert, dass Drag-Previews außerhalb des Viewports gehen
+.cdk-drag-preview {
+  // ... bestehende Styles ...
+  
+  // Wichtig: Bounds-Checking
+  max-width: min(300px, 90vw) !important;
+  max-height: min(150px, 40vh) !important;
+  
+  // Verhindert horizontales Scrollen
+  box-sizing: border-box;
+  
+  // Bessere mobile Unterstützung
+  @media (max-width: 768px) {
+    max-width: min(250px, 85vw) !important;
+    max-height: min(120px, 35vh) !important;
+    font-size: 0.875rem;
+  }
+}
+
+// Featured Item Special Styling
+.featured-item.cdk-drag {
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1));
+  
+  &:hover {
+    border-color: rgba(34, 197, 94, 0.5);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.2);
+  }
+}
+
+// Smooth transitions für alle interaktiven Elemente
+button, input, textarea {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+// Custom Focus Styles
+input:focus, textarea:focus {
+  outline: none;
+  ring-width: 2px;
+  ring-color: rgba(34, 197, 94, 0.5);
+  ring-opacity: 0.5;
+  border-color: rgb(34, 197, 94);
+}
+
+// Loading States
+.drag-loading {
+  pointer-events: none;
+  opacity: 0.6;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+// Accessibility Improvements
+@media (prefers-reduced-motion: reduce) {
+  .cdk-drag,
+  .cdk-drag-animating,
+  .cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder),
+  button,
+  input,
+  textarea {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .cdk-drag-preview {
+    transform: none !important;
+  }
+}
+
+// High Contrast Mode Support
+@media (prefers-contrast: high) {
+  .cdk-drag-placeholder {
+    border-color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  [cdkDragHandle] {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+}
