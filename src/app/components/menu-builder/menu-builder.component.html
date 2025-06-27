@@ -17,29 +17,39 @@
     </button>
   </div>
 
-  <!-- Drag & Drop Info -->
+  <!-- Mobile/Desktop Info -->
   <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-3 sm:p-4">
     <div class="flex items-center space-x-2 mb-2">
-      <span class="text-blue-400">🖱️</span>
-      <span class="text-blue-400 font-medium text-sm">Drag & Drop aktiviert</span>
+      <span class="text-blue-400 block sm:hidden">📱</span>
+      <span class="text-blue-400 hidden sm:block">🖱️</span>
+      <span class="text-blue-400 font-medium text-sm">
+        <span class="block sm:hidden">Mobile Sortierung aktiviert</span>
+        <span class="hidden sm:block">Drag & Drop aktiviert</span>
+      </span>
     </div>
     <p class="text-blue-300 text-xs sm:text-sm">
-      Ziehen Sie Kategorien und Gerichte per Drag & Drop, um die Reihenfolge zu ändern. 
-      Gerichte können auch zwischen Kategorien verschoben werden.
+      <span class="block sm:hidden">
+        Verwenden Sie die ↑↓ Pfeile, um Kategorien und Gerichte zu sortieren.
+      </span>
+      <span class="hidden sm:block">
+        Ziehen Sie Kategorien und Gerichte per Drag & Drop, um die Reihenfolge zu ändern. 
+        Gerichte können auch zwischen Kategorien verschoben werden.
+      </span>
     </p>
   </div>
 
-  <!-- Categories List with Drag & Drop -->
+  <!-- Categories List -->
   <div 
     class="space-y-3 sm:space-y-4"
     cdkDropList 
     [cdkDropListData]="menuCategories()"
     (cdkDropListDropped)="dropCategory($event)"
     cdkDropListOrientation="vertical"
-    [cdkDropListSortingDisabled]="false"
+    [cdkDropListSortingDisabled]="isMobileDevice()"
+    [cdkDropListDisabled]="isMobileDevice()"
   >
     <div
-      *ngFor="let category of menuCategories(); trackBy: trackByCategory"
+      *ngFor="let category of menuCategories(); let categoryIndex = index; trackBy: trackByCategory"
       class="bg-white/5 rounded-xl border border-white/10 transition-all duration-300 hover:border-white/20"
       cdkDrag
       [cdkDragData]="category"
@@ -48,8 +58,9 @@
       (cdkDragEnded)="onDragEnded()"
       data-category-item
       [attr.data-category-id]="category.id"
+      [cdkDragDisabled]="isMobileDevice()"
     >
-      <!-- Custom Drag Preview für Kategorien - Noch kompakter -->
+      <!-- Drag Preview (nur Desktop) -->
       <div *cdkDragPreview class="bg-white/98 text-gray-800 p-2 rounded-lg shadow-xl border-2 border-green-500 category-preview">
         <div class="flex items-center space-x-2">
           <div class="w-6 h-6 bg-green-500 rounded flex items-center justify-center category-icon flex-shrink-0">
@@ -64,73 +75,159 @@
           Verschieben
         </div>
       </div>
-      <!-- Drag Handle für Kategorie -->
-      <div class="flex items-center p-3 sm:p-4 border-b border-white/10 bg-white/5 rounded-t-xl">
-        <div 
-          class="cursor-move p-1 rounded hover:bg-white/10 transition-colors mr-3"
-          cdkDragHandle
-        >
-          <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-          </svg>
-        </div>
-        <input
-          type="text"
-          [value]="category.category"
-          (input)="updateCategory(category.id, { category: $any($event.target).value })"
-          class="flex-1 text-base sm:text-lg font-bold bg-transparent text-white border-none outline-none focus:bg-white/10 rounded px-2 py-1 placeholder-gray-400"
-          placeholder="Kategorie Name"
-        />
-        <div class="flex items-center space-x-2 ml-3">
-          <!-- Icon Picker Button -->
-          <div class="relative icon-picker-container">
-            <button
-              (click)="toggleIconPicker(category.id)"
-              class="px-2 py-1 bg-purple-500 hover:bg-purple-600 text-white text-xs rounded transition-all duration-300 hover:scale-105 flex items-center space-x-1"
-              title="Icon auswählen"
-            >
-              <span class="text-sm">🎨</span>
-              <span class="hidden sm:inline">Icon</span>
-            </button>
+
+      <!-- Category Header -->
+      <div class="flex flex-col gap-3 p-3 sm:p-4 border-b border-white/10 bg-white/5 rounded-t-xl">
+        
+        <!-- Desktop Layout (mit Drag Handle) -->
+        <div class="hidden sm:flex sm:items-center">
+          <div 
+            class="cursor-move p-1 rounded hover:bg-white/10 transition-colors mr-3 flex-shrink-0"
+            cdkDragHandle
+          >
+            <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+            </svg>
+          </div>
+          <input
+            type="text"
+            [value]="category.category"
+            (input)="updateCategory(category.id, { category: $any($event.target).value })"
+            class="flex-1 text-lg font-bold bg-transparent text-white border-none outline-none focus:bg-white/10 rounded px-2 py-1 placeholder-gray-400 min-w-0"
+            placeholder="Kategorie Name"
+          />
+          <div class="flex items-center space-x-2 ml-3 flex-shrink-0">
+            <span class="text-xs text-gray-400 bg-gray-600/30 px-2 py-1 rounded whitespace-nowrap">
+              {{ category.items.length }} {{ category.items.length === 1 ? 'Gericht' : 'Gerichte' }}
+            </span>
             
-            <!-- Icon Picker Dropdown -->
-            <div 
-              *ngIf="showIconPicker() === category.id"
-              class="absolute top-8 right-0 bg-gray-800 border border-gray-600 rounded-lg p-3 shadow-xl z-50 min-w-[200px]"
-            >
-              <div class="text-xs text-gray-400 mb-2">Icon auswählen:</div>
-              <div class="grid grid-cols-4 gap-2">
+            <!-- Desktop Action Buttons -->
+            <div class="flex gap-2">
+              <div class="relative icon-picker-container">
                 <button
-                  *ngFor="let icon of categoryIcons"
-                  (click)="updateCategoryIcon(category.id, icon)"
-                  class="w-8 h-8 flex items-center justify-center hover:bg-gray-700 rounded transition-colors text-lg"
-                  [title]="icon.name"
+                  (click)="toggleIconPicker(category.id)"
+                  class="px-3 py-1 bg-purple-500 hover:bg-purple-600 text-white text-xs rounded transition-all duration-300 hover:scale-105"
+                  title="Icon auswählen"
                 >
-                  {{ icon.emoji }}
+                  🎨 Icon
                 </button>
+                
+                <div 
+                  *ngIf="showIconPicker() === category.id"
+                  class="absolute top-10 right-0 bg-gray-800 border border-gray-600 rounded-lg p-3 shadow-xl z-50 min-w-[200px]"
+                >
+                  <div class="text-xs text-gray-400 mb-2">Icon auswählen:</div>
+                  <div class="grid grid-cols-4 gap-2">
+                    <button
+                      *ngFor="let icon of categoryIcons"
+                      (click)="updateCategoryIcon(category.id, icon)"
+                      class="w-8 h-8 flex items-center justify-center hover:bg-gray-700 rounded transition-colors text-lg"
+                      [title]="icon.name"
+                    >
+                      {{ icon.emoji }}
+                    </button>
+                  </div>
+                </div>
               </div>
+              
+              <button
+                (click)="addItem(category.id)"
+                class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded transition-all duration-300 hover:scale-105"
+              >
+                + Gericht
+              </button>
+              
+              <button
+                (click)="removeCategory(category.id)"
+                class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs rounded transition-all duration-300 hover:scale-105"
+              >
+                Löschen
+              </button>
             </div>
           </div>
-          
-          <span class="hidden sm:inline text-xs text-gray-400 bg-gray-600/30 px-2 py-1 rounded">
-            {{ category.items.length }} {{ category.items.length === 1 ? 'Gericht' : 'Gerichte' }}
-          </span>
-          <button
-            (click)="addItem(category.id)"
-            class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-xs sm:text-sm rounded transition-all duration-300 hover:scale-105"
-          >
-            + Gericht
-          </button>
-          <button
-            (click)="removeCategory(category.id)"
-            class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-xs sm:text-sm rounded transition-all duration-300 hover:scale-105"
-          >
-            Löschen
-          </button>
+        </div>
+
+        <!-- Mobile Layout (mit Sortier-Buttons) -->
+        <div class="block sm:hidden space-y-3">
+          <!-- Kategorie Name + Sortierung -->
+          <div class="flex items-center gap-2">
+            <input
+              type="text"
+              [value]="category.category"
+              (input)="updateCategory(category.id, { category: $any($event.target).value })"
+              class="flex-1 text-base font-bold bg-transparent text-white border-none outline-none focus:bg-white/10 rounded px-2 py-1 placeholder-gray-400"
+              placeholder="Kategorie Name"
+            />
+            <!-- Mobile Sortier-Buttons für Kategorien -->
+            <div class="flex items-center gap-1 flex-shrink-0">
+              <button
+                *ngIf="categoryIndex > 0"
+                (click)="moveCategoryUp(categoryIndex)"
+                class="w-8 h-8 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center justify-center transition-colors"
+                title="Nach oben"
+              >
+                ↑
+              </button>
+              <button
+                *ngIf="categoryIndex < menuCategories().length - 1"
+                (click)="moveCategoryDown(categoryIndex)"
+                class="w-8 h-8 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center justify-center transition-colors"
+                title="Nach unten"
+              >
+                ↓
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile Action Buttons -->
+          <div class="flex flex-wrap gap-2">
+            <div class="relative icon-picker-container">
+              <button
+                (click)="toggleIconPicker(category.id)"
+                class="px-3 py-2 bg-purple-500 hover:bg-purple-600 text-white text-xs rounded transition-all duration-300 flex items-center gap-1"
+              >
+                🎨 <span>Icon</span>
+              </button>
+              
+              <div 
+                *ngIf="showIconPicker() === category.id"
+                class="absolute top-12 left-0 bg-gray-800 border border-gray-600 rounded-lg p-3 shadow-xl z-50 w-[200px]"
+              >
+                <div class="text-xs text-gray-400 mb-2">Icon auswählen:</div>
+                <div class="grid grid-cols-4 gap-2">
+                  <button
+                    *ngFor="let icon of categoryIcons"
+                    (click)="updateCategoryIcon(category.id, icon)"
+                    class="w-8 h-8 flex items-center justify-center hover:bg-gray-700 rounded transition-colors text-lg"
+                  >
+                    {{ icon.emoji }}
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <button
+              (click)="addItem(category.id)"
+              class="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded transition-all duration-300 flex items-center gap-1"
+            >
+              + <span>Gericht</span>
+            </button>
+            
+            <button
+              (click)="removeCategory(category.id)"
+              class="px-3 py-2 bg-red-500 hover:bg-red-600 text-white text-xs rounded transition-all duration-300 flex items-center gap-1"
+            >
+              🗑️ <span>Löschen</span>
+            </button>
+            
+            <div class="text-xs text-gray-400 bg-gray-600/30 px-2 py-2 rounded flex items-center">
+              {{ category.items.length }} {{ category.items.length === 1 ? 'Gericht' : 'Gerichte' }}
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Items in Category with Drag & Drop -->
+      <!-- Items in Category -->
       <div class="p-3 sm:p-4">
         <div 
           *ngIf="category.items.length > 0; else noItems"
@@ -140,9 +237,10 @@
           [cdkDropListConnectedTo]="getAllItemDropListIds()"
           (cdkDropListDropped)="dropItem($event, category.id)"
           [id]="getItemDropListId(category.id)"
+          [cdkDropListDisabled]="isMobileDevice()"
         >
           <div
-            *ngFor="let item of category.items; trackBy: trackByItem"
+            *ngFor="let item of category.items; let itemIndex = index; trackBy: trackByItem"
             class="bg-white/5 rounded-lg border border-white/10 transition-all duration-300 hover:border-white/20 hover:bg-white/10"
             [class.featured-item]="item.featured"
             cdkDrag
@@ -150,8 +248,9 @@
             [cdkDragBoundary]="'.menu-content'"
             (cdkDragStarted)="onDragStarted($event)"
             (cdkDragEnded)="onDragEnded()"
+            [cdkDragDisabled]="isMobileDevice()"
           >
-            <!-- Drag Preview für Items - Kompakter -->
+            <!-- Drag Preview (nur Desktop) -->
             <div *cdkDragPreview class="bg-white/98 text-gray-800 p-3 rounded-lg shadow-xl border-2 border-blue-500 item-preview">
               <div class="flex items-center space-x-2 mb-1">
                 <div class="w-6 h-6 bg-blue-500 rounded flex items-center justify-center flex-shrink-0">
@@ -168,8 +267,8 @@
             </div>
 
             <div class="p-3 space-y-3">
-              <!-- Item Header mit Drag Handle -->
-              <div class="flex items-center space-x-2">
+              <!-- Desktop Item Header -->
+              <div class="hidden sm:flex items-center space-x-2">
                 <div 
                   class="cursor-move p-1 rounded hover:bg-white/10 transition-colors flex-shrink-0"
                   cdkDragHandle
@@ -178,7 +277,7 @@
                     <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
                   </svg>
                 </div>
-                <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="flex-1 grid grid-cols-2 gap-3">
                   <div>
                     <label class="block text-xs text-white/70 mb-1">Gericht Name</label>
                     <input
@@ -204,7 +303,57 @@
                 </div>
               </div>
 
-              <!-- Description -->
+              <!-- Mobile Item Header (mit Sortier-Buttons) -->
+              <div class="block sm:hidden space-y-3">
+                <div class="flex items-center gap-2">
+                  <div class="flex-1 space-y-2">
+                    <div>
+                      <label class="block text-xs text-white/70 mb-1">Gericht Name</label>
+                      <input
+                        type="text"
+                        [value]="item.name"
+                        (input)="updateItem(category.id, item.id, { name: $any($event.target).value })"
+                        class="w-full bg-white/10 text-white rounded px-3 py-2 text-sm border border-white/20 focus:border-green-400 transition-colors"
+                        placeholder="Name des Gerichts"
+                      />
+                    </div>
+                    <div>
+                      <label class="block text-xs text-white/70 mb-1">Preis</label>
+                      <input
+                        type="number"
+                        [value]="item.price"
+                        (input)="updateItem(category.id, item.id, { price: +$any($event.target).value })"
+                        class="w-full bg-white/10 text-white rounded px-3 py-2 text-sm border border-white/20 focus:border-green-400 transition-colors"
+                        placeholder="0.00"
+                        min="0"
+                        step="0.01"
+                      />
+                    </div>
+                  </div>
+                  
+                  <!-- Mobile Sortier-Buttons für Items -->
+                  <div class="flex flex-col gap-1 flex-shrink-0">
+                    <button
+                      *ngIf="itemIndex > 0"
+                      (click)="moveItemUp(category.id, itemIndex)"
+                      class="w-8 h-8 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center justify-center transition-colors"
+                      title="Nach oben"
+                    >
+                      ↑
+                    </button>
+                    <button
+                      *ngIf="itemIndex < category.items.length - 1"
+                      (click)="moveItemDown(category.id, itemIndex)"
+                      class="w-8 h-8 bg-gray-600 hover:bg-gray-500 text-white rounded flex items-center justify-center transition-colors"
+                      title="Nach unten"
+                    >
+                      ↓
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Description (gleich für Mobile/Desktop) -->
               <div>
                 <label class="block text-xs text-white/70 mb-1">Beschreibung</label>
                 <textarea
@@ -262,7 +411,7 @@
     <h3 class="text-lg sm:text-xl font-semibold mb-4">Noch keine Menü-Kategorien</h3>
     <p class="mb-6 text-sm sm:text-base max-w-md mx-auto">
       Beginnen Sie mit der Erstellung Ihres Menüs, indem Sie Ihre erste Kategorie hinzufügen. 
-      Später können Sie alles per Drag & Drop sortieren.
+      Später können Sie alles <span class="hidden sm:inline">per Drag & Drop</span><span class="sm:hidden">mit den Pfeiltasten</span> sortieren.
     </p>
     <button
       (click)="addCategory()"
