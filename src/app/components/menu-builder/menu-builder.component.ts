@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, CdkDragStart, CdkDrag } from '@angular/cdk/drag-drop';
@@ -46,6 +46,10 @@ export class MenuBuilderComponent implements OnInit {
     { emoji: '🐟', name: 'Fisch' }
   ];
 
+  // Touch-Gesten Properties
+  private touchStartY: number = 0;
+  private touchStartTime: number = 0;
+
   ngOnInit() {
     // Komponente initialisiert
     // Click outside handler für Icon Picker
@@ -55,6 +59,17 @@ export class MenuBuilderComponent implements OnInit {
         this.showIconPicker.set(null);
       }
     });
+  }
+
+  // 🆕 Mobile Detection
+  isMobileDevice(): boolean {
+    if (typeof window === 'undefined') return false;
+    
+    // Prüft sowohl Bildschirmgröße als auch Touch-Unterstützung
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isSmallScreen = window.innerWidth < 768; // unter 768px gilt als Mobile
+    
+    return isTouchDevice && isSmallScreen;
   }
 
   menuCategories() {
@@ -145,8 +160,163 @@ export class MenuBuilderComponent implements OnInit {
     return emojiRegex.test(char);
   }
 
-  // 🆕 Drag & Drop Methods mit Container-Kontrolle
+  // 🆕 Mobile Sortier-Methoden für Kategorien
+  moveCategoryUp(currentIndex: number) {
+    if (currentIndex <= 0) return;
+    
+    const categories = [...this.menuCategories()];
+    const targetIndex = currentIndex - 1;
+    
+    // Tausche Positionen
+    const temp = categories[currentIndex];
+    categories[currentIndex] = categories[targetIndex];
+    categories[targetIndex] = temp;
+    
+    this.menuService.reorderCategories(categories);
+    
+    // Feedback für User
+    this.showSortFeedback('Kategorie nach oben verschoben');
+    
+    // Scroll und Highlight
+    setTimeout(() => {
+      this.scrollToElement(`[data-category-id="${categories[targetIndex]?.id}"]`);
+      this.highlightElement(`[data-category-id="${categories[targetIndex]?.id}"]`);
+    }, 50);
+  }
+
+  moveCategoryDown(currentIndex: number) {
+    const categories = this.menuCategories();
+    if (currentIndex >= categories.length - 1) return;
+    
+    const categoriesArray = [...categories];
+    const targetIndex = currentIndex + 1;
+    
+    // Tausche Positionen
+    const temp = categoriesArray[currentIndex];
+    categoriesArray[currentIndex] = categoriesArray[targetIndex];
+    categoriesArray[targetIndex] = temp;
+    
+    this.menuService.reorderCategories(categoriesArray);
+    
+    // Feedback für User
+    this.showSortFeedback('Kategorie nach unten verschoben');
+    
+    // Scroll und Highlight
+    setTimeout(() => {
+      this.scrollToElement(`[data-category-id="${categoriesArray[targetIndex]?.id}"]`);
+      this.highlightElement(`[data-category-id="${categoriesArray[targetIndex]?.id}"]`);
+    }, 50);
+  }
+
+  // 🆕 Mobile Sortier-Methoden für Items
+  moveItemUp(categoryId: number, currentIndex: number) {
+    if (currentIndex <= 0) return;
+    
+    const categories = [...this.menuCategories()];
+    const categoryIndex = categories.findIndex(cat => cat.id === categoryId);
+    
+    if (categoryIndex === -1) return;
+    
+    const items = [...categories[categoryIndex].items];
+    const targetIndex = currentIndex - 1;
+    
+    // Tausche Positionen
+    const temp = items[currentIndex];
+    items[currentIndex] = items[targetIndex];
+    items[targetIndex] = temp;
+    
+    // Update die Kategorie
+    categories[categoryIndex] = { ...categories[categoryIndex], items };
+    this.menuService.reorderCategories(categories);
+    
+    // Feedback für User
+    this.showSortFeedback('Gericht nach oben verschoben');
+  }
+
+  moveItemDown(categoryId: number, currentIndex: number) {
+    const categories = [...this.menuCategories()];
+    const categoryIndex = categories.findIndex(cat => cat.id === categoryId);
+    
+    if (categoryIndex === -1) return;
+    
+    const items = [...categories[categoryIndex].items];
+    if (currentIndex >= items.length - 1) return;
+    
+    const targetIndex = currentIndex + 1;
+    
+    // Tausche Positionen
+    const temp = items[currentIndex];
+    items[currentIndex] = items[targetIndex];
+    items[targetIndex] = temp;
+    
+    // Update die Kategorie
+    categories[categoryIndex] = { ...categories[categoryIndex], items };
+    this.menuService.reorderCategories(categories);
+    
+    // Feedback für User
+    this.showSortFeedback('Gericht nach unten verschoben');
+  }
+
+  // 🆕 Feedback für Sortier-Aktionen
+  private showSortFeedback(message: string) {
+    // Einfaches Toast-ähnliches Feedback
+    console.log(message);
+    
+    // Optional: Kurzes visuelles Feedback
+    const feedbackElement = document.createElement('div');
+    feedbackElement.textContent = message;
+    feedbackElement.className = 'mobile-feedback-toast';
+    
+    document.body.appendChild(feedbackElement);
+    
+    // Animation
+    setTimeout(() => feedbackElement.classList.add('show'), 100);
+    
+    // Nach 2 Sekunden entfernen
+    setTimeout(() => {
+      feedbackElement.classList.add('hide');
+      
+      setTimeout(() => {
+        if (feedbackElement.parentNode) {
+          document.body.removeChild(feedbackElement);
+        }
+      }, 300);
+    }, 2000);
+  }
+
+  // Scroll zu Element nach Sortierung
+  private scrollToElement(elementSelector: string, delay: number = 100) {
+    setTimeout(() => {
+      const element = document.querySelector(elementSelector);
+      if (element) {
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'nearest'
+        });
+      }
+    }, delay);
+  }
+
+  // Highlight-Effekt für verschobene Elemente
+  private highlightElement(elementSelector: string) {
+    setTimeout(() => {
+      const element = document.querySelector(elementSelector) as HTMLElement;
+      if (element) {
+        element.classList.add('moved');
+        
+        setTimeout(() => {
+          element.classList.remove('moved');
+        }, 1000);
+      }
+    }, 100);
+  }
+
+  // 🆕 Drag & Drop Methods mit Container-Kontrolle (nur Desktop)
   onDragStarted(event: CdkDragStart) {
+    // Nur auf Desktop aktivieren
+    if (this.isMobileDevice()) return;
+    
     // Versteckt das ursprüngliche Element und aktiviert Container-Begrenzung
     const container = document.querySelector('.menu-content');
     if (container) {
@@ -165,6 +335,9 @@ export class MenuBuilderComponent implements OnInit {
   }
 
   onDragEnded() {
+    // Nur auf Desktop aktivieren
+    if (this.isMobileDevice()) return;
+    
     // Cleanup und Container zurücksetzen
     const container = document.querySelector('.menu-content');
     if (container) {
@@ -173,25 +346,17 @@ export class MenuBuilderComponent implements OnInit {
     document.body.classList.remove('drag-in-progress');
   }
 
-  // Optional: Position-Constraint Funktion (falls gewünscht)
-  constrainPosition = (point: any, dragRef: any, dimensions: any, pickupPosition: any) => {
-    // Begrenzt Drag auf sichtbaren Bereich
-    const container = document.querySelector('.menu-content');
-    if (!container) return point;
-    
-    const containerRect = container.getBoundingClientRect();
-    
-    return {
-      x: Math.max(containerRect.left, Math.min(point.x, containerRect.right - dimensions.width)),
-      y: Math.max(containerRect.top, Math.min(point.y, containerRect.bottom - dimensions.height))
-    };
-  };
-
   dropCategory(event: CdkDragDrop<MenuCategory[]>) {
+    // Nur auf Desktop aktivieren
+    if (this.isMobileDevice()) return;
+    
     this.menuService.dropCategory(event);
   }
 
   dropItem(event: CdkDragDrop<MenuItem[]>, categoryId: number) {
+    // Nur auf Desktop aktivieren
+    if (this.isMobileDevice()) return;
+    
     this.menuService.dropItemBetweenCategories(event, categoryId);
   }
 
@@ -201,6 +366,116 @@ export class MenuBuilderComponent implements OnInit {
 
   getAllItemDropListIds(): string[] {
     return this.menuService.getAllItemDropListIds();
+  }
+
+  // 🆕 Keyboard Shortcuts für Desktop
+  @HostListener('keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent) {
+    // Nur auf Desktop und wenn kein Input fokussiert ist
+    if (this.isMobileDevice() || this.isInputFocused()) return;
+    
+    // Ctrl/Cmd + Pfeil-Tasten für Kategorien
+    if ((event.ctrlKey || event.metaKey) && event.shiftKey) {
+      const categories = this.menuCategories();
+      
+      if (event.key === 'ArrowUp' && categories.length > 1) {
+        event.preventDefault();
+        this.moveCategoryUp(0); // Erste Kategorie nach oben
+      } else if (event.key === 'ArrowDown' && categories.length > 1) {
+        event.preventDefault();
+        this.moveCategoryDown(categories.length - 1); // Letzte Kategorie nach unten
+      }
+    }
+  }
+
+  private isInputFocused(): boolean {
+    const activeElement = document.activeElement;
+    return activeElement instanceof HTMLInputElement || 
+           activeElement instanceof HTMLTextAreaElement ||
+           activeElement?.getAttribute('contenteditable') === 'true';
+  }
+
+  // 🆕 Batch Operations für Mobile (optional)
+  
+  // Alle Kategorien sortieren
+  sortCategoriesAlphabetically() {
+    const categories = [...this.menuCategories()];
+    categories.sort((a, b) => a.category.localeCompare(b.category));
+    this.menuService.reorderCategories(categories);
+    this.showSortFeedback('Kategorien alphabetisch sortiert');
+  }
+
+  // Alle Items in einer Kategorie sortieren
+  sortItemsInCategory(categoryId: number, sortBy: 'name' | 'price' = 'name') {
+    const categories = [...this.menuCategories()];
+    const categoryIndex = categories.findIndex(cat => cat.id === categoryId);
+    
+    if (categoryIndex === -1) return;
+    
+    const items = [...categories[categoryIndex].items];
+    
+    if (sortBy === 'name') {
+      items.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === 'price') {
+      items.sort((a, b) => a.price - b.price);
+    }
+    
+    categories[categoryIndex] = { ...categories[categoryIndex], items };
+    this.menuService.reorderCategories(categories);
+    this.showSortFeedback(`Gerichte nach ${sortBy === 'name' ? 'Name' : 'Preis'} sortiert`);
+  }
+
+  // Featured Items nach oben verschieben
+  moveFeaturedItemsToTop(categoryId: number) {
+    const categories = [...this.menuCategories()];
+    const categoryIndex = categories.findIndex(cat => cat.id === categoryId);
+    
+    if (categoryIndex === -1) return;
+    
+    const items = [...categories[categoryIndex].items];
+    const featuredItems = items.filter(item => item.featured);
+    const regularItems = items.filter(item => !item.featured);
+    
+    categories[categoryIndex] = { 
+      ...categories[categoryIndex], 
+      items: [...featuredItems, ...regularItems] 
+    };
+    
+    this.menuService.reorderCategories(categories);
+    this.showSortFeedback('Featured-Gerichte nach oben verschoben');
+  }
+
+  // 🆕 Mobile-spezifische Touch-Gesten (optional)
+  onTouchStart(event: TouchEvent, type: 'category' | 'item', categoryId?: number, itemIndex?: number) {
+    if (!this.isMobileDevice()) return;
+    
+    this.touchStartY = event.touches[0].clientY;
+    this.touchStartTime = Date.now();
+  }
+
+  onTouchEnd(event: TouchEvent, type: 'category' | 'item', categoryIndex?: number, categoryId?: number, itemIndex?: number) {
+    if (!this.isMobileDevice()) return;
+    
+    const touchEndY = event.changedTouches[0].clientY;
+    const touchDuration = Date.now() - this.touchStartTime;
+    const deltaY = this.touchStartY - touchEndY;
+    
+    // Swipe-Erkennung: mindestens 50px Bewegung in unter 300ms
+    if (Math.abs(deltaY) > 50 && touchDuration < 300) {
+      if (type === 'category' && categoryIndex !== undefined) {
+        if (deltaY > 0) { // Swipe nach oben = nach oben verschieben
+          this.moveCategoryUp(categoryIndex);
+        } else { // Swipe nach unten = nach unten verschieben
+          this.moveCategoryDown(categoryIndex);
+        }
+      } else if (type === 'item' && categoryId !== undefined && itemIndex !== undefined) {
+        if (deltaY > 0) { // Swipe nach oben = nach oben verschieben
+          this.moveItemUp(categoryId, itemIndex);
+        } else { // Swipe nach unten = nach unten verschieben
+          this.moveItemDown(categoryId, itemIndex);
+        }
+      }
+    }
   }
 
   // Statistics Methods
