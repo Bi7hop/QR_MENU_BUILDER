@@ -32,11 +32,13 @@ export class DesignCustomizerComponent implements OnInit {
   isExporting = signal<boolean>(false);
   exportSuccess = signal<boolean>(false);
 
+  // Erweiterte Theme-Liste mit dem neuen Platinum Theme
   themesArray = [
     { key: 'neon', value: { name: 'Neon Cyberpunk', primary: '#00ff88', secondary: '#ff0080', accent: '#ffff00' } },
     { key: 'sunset', value: { name: 'Sonnenuntergang', primary: '#ff6b35', secondary: '#f7931e', accent: '#ffb627' } },
     { key: 'ocean', value: { name: 'Tiefer Ozean', primary: '#0ea5e9', secondary: '#06b6d4', accent: '#10b981' } },
-    { key: 'forest', value: { name: 'Dunkler Wald', primary: '#22c55e', secondary: '#16a34a', accent: '#84cc16' } }
+    { key: 'forest', value: { name: 'Dunkler Wald', primary: '#22c55e', secondary: '#16a34a', accent: '#84cc16' } },
+    { key: 'platinum', value: { name: 'Platinum Elite', primary: '#e5e7eb', secondary: '#9ca3af', accent: '#d1d5db' } }
   ];
 
   ngOnInit() {
