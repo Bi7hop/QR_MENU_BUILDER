@@ -46,6 +46,8 @@
       [cdkDragBoundary]="'.menu-content'"
       (cdkDragStarted)="onDragStarted($event)"
       (cdkDragEnded)="onDragEnded()"
+      data-category-item
+      [attr.data-category-id]="category.id"
     >
       <!-- Custom Drag Preview für Kategorien - Noch kompakter -->
       <div *cdkDragPreview class="bg-white/98 text-gray-800 p-2 rounded-lg shadow-xl border-2 border-green-500 category-preview">
@@ -80,6 +82,36 @@
           placeholder="Kategorie Name"
         />
         <div class="flex items-center space-x-2 ml-3">
+          <!-- Icon Picker Button -->
+          <div class="relative icon-picker-container">
+            <button
+              (click)="toggleIconPicker(category.id)"
+              class="px-2 py-1 bg-purple-500 hover:bg-purple-600 text-white text-xs rounded transition-all duration-300 hover:scale-105 flex items-center space-x-1"
+              title="Icon auswählen"
+            >
+              <span class="text-sm">🎨</span>
+              <span class="hidden sm:inline">Icon</span>
+            </button>
+            
+            <!-- Icon Picker Dropdown -->
+            <div 
+              *ngIf="showIconPicker() === category.id"
+              class="absolute top-8 right-0 bg-gray-800 border border-gray-600 rounded-lg p-3 shadow-xl z-50 min-w-[200px]"
+            >
+              <div class="text-xs text-gray-400 mb-2">Icon auswählen:</div>
+              <div class="grid grid-cols-4 gap-2">
+                <button
+                  *ngFor="let icon of categoryIcons"
+                  (click)="updateCategoryIcon(category.id, icon)"
+                  class="w-8 h-8 flex items-center justify-center hover:bg-gray-700 rounded transition-colors text-lg"
+                  [title]="icon.name"
+                >
+                  {{ icon.emoji }}
+                </button>
+              </div>
+            </div>
+          </div>
+          
           <span class="hidden sm:inline text-xs text-gray-400 bg-gray-600/30 px-2 py-1 rounded">
             {{ category.items.length }} {{ category.items.length === 1 ? 'Gericht' : 'Gerichte' }}
           </span>
