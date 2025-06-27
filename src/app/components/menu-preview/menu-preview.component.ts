@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MenuService } from '../../services/menu.service';
 import { ThemeService } from '../../services/theme.service';
@@ -21,9 +21,56 @@ export class MenuPreviewComponent implements OnInit {
 
   exportUrl = signal<string>('');
   exportFileName = signal<string>('');
+  previewFontFamily = signal<string>('Inter');
+
+  constructor() {
+    // Effect um Schriftart-Änderungen zu verfolgen
+    effect(() => {
+      const restaurant = this.restaurant();
+      this.loadPreviewFont(restaurant.font);
+      this.previewFontFamily.set(restaurant.font);
+    });
+  }
 
   ngOnInit() {
-    // Komponente initialisiert
+    // Initial font load
+    const restaurant = this.restaurant();
+    this.loadPreviewFont(restaurant.font);
+    this.previewFontFamily.set(restaurant.font);
+  }
+
+  private loadPreviewFont(fontName: string) {
+    // Prüfen ob Font bereits geladen ist
+    if (document.fonts.check(`16px "${fontName}"`)) {
+      return;
+    }
+
+    // Google Fonts URL generieren
+    const fontUrl = `https://fonts.googleapis.com/css2?family=${fontName.replace(' ', '+')}:wght@300;400;500;600;700;800&display=swap`;
+    
+    // Prüfen ob Link bereits existiert
+    const existingLink = document.querySelector(`link[href*="${fontName.replace(' ', '+')}"]`);
+    if (existingLink) {
+      return;
+    }
+
+    // Font dynamisch laden
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = fontUrl;
+    document.head.appendChild(link);
+
+    // Warten bis Font geladen ist
+    link.onload = () => {
+      // Font-Familie explizit für die Vorschau setzen
+      this.previewFontFamily.set(fontName);
+    };
+  }
+
+  getPreviewFontFamily(): string {
+    const fontName = this.previewFontFamily();
+    // Fallback-Fonts hinzufügen für bessere Kompatibilität
+    return `"${fontName}", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`;
   }
 
   restaurant(): Restaurant {
