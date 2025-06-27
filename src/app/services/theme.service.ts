@@ -42,6 +42,15 @@ export class ThemeService {
       text: 'text-white',
       card: 'bg-green-800/50 border-green-400/30'
     },
+    platinum: {
+      name: 'Platinum Elite',
+      primary: '#e5e7eb',
+      secondary: '#9ca3af',
+      accent: '#d1d5db',
+      bg: 'from-slate-800 via-gray-900 to-zinc-900',
+      text: 'text-gray-100',
+      card: 'bg-slate-800/60 border-gray-400/20'
+    },
     minimal: {
       name: 'Minimal Schwarz',
       primary: '#000000',
