@@ -344,6 +344,33 @@ input:focus, textarea:focus {
   100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
+// Highlight-Effekt für neue Kategorien
+.new-category-highlight {
+  animation: newCategoryPulse 2s ease-in-out;
+  border-color: rgba(34, 197, 94, 0.6) !important;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3) !important;
+}
+
+@keyframes newCategoryPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+// Smooth Scroll Behavior für Container
+.menu-content {
+  scroll-behavior: smooth;
+}
+
 // Accessibility Improvements
 @media (prefers-reduced-motion: reduce) {
   .cdk-drag,
@@ -351,13 +378,18 @@ input:focus, textarea:focus {
   .cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder),
   button,
   input,
-  textarea {
+  textarea,
+  .new-category-highlight {
     transition: none !important;
     animation: none !important;
   }
   
   .cdk-drag-preview {
     transform: none !important;
+  }
+  
+  .menu-content {
+    scroll-behavior: auto !important;
   }
 }
 
@@ -370,5 +402,9 @@ input:focus, textarea:focus {
   
   [cdkDragHandle] {
     border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+  
+  .new-category-highlight {
+    border-color: #ffffff !important;
   }
 }
