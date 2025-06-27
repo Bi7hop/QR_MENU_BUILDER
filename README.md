@@ -4,31 +4,31 @@
 
 ![MenuForge Logo](https://img.shields.io/badge/🍽️-MenuForge-00ff88?style=for-the-badge&labelColor=1a1a1a)
 
-**Der moderne QR-Code Menü-Generator der nächsten Generation**
+**The Modern QR Code Menu Generator for the Next Generation**
 
 [![Angular](https://img.shields.io/badge/Angular-17-DD0031?style=flat-square&logo=angular&logoColor=white)](https://angular.io/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-MIT-00ff88?style=flat-square)](LICENSE)
 
-[🚀 Demo](https://menuforge.app) | [📖 Dokumentation](#dokumentation) | [🐛 Issues](https://github.com/yourusername/menuforge/issues) | [💫 Features](#features)
+[🚀 Live Demo](https://menuforge.app) | [📖 Documentation](#documentation) | [🐛 Issues](https://github.com/yourusername/menuforge/issues) | [💫 Features](#features)
 
 </div>
 
 ---
 
-## ✨ Was ist MenuForge?
+## ✨ What is MenuForge?
 
-MenuForge ist eine innovative **Web-Anwendung** zur Erstellung digitaler Restaurantmenüs mit QR-Code-Integration. Gastronomen können damit in wenigen Minuten ansprechende, mobile-optimierte Menüs erstellen, die Gäste einfach mit ihrem Smartphone scannen können.
+MenuForge is an innovative **web application** for creating digital restaurant menus with QR code integration. Restaurant owners can create stunning, mobile-optimized menus in minutes that customers can easily access by scanning a QR code with their smartphone.
 
-### 🎯 Warum MenuForge?
+### 🎯 Why MenuForge?
 
-- ✅ **100% DSGVO-konform** - Alle Daten bleiben lokal auf dem Gerät
-- 🚀 **Keine Installation** - Läuft direkt im Browser
-- 📱 **Mobile-First Design** - Optimiert für alle Geräte
-- 🎨 **Drag & Drop Editor** - Intuitive Bedienung
-- ⚡ **Sofortiger Export** - QR-Code in Sekunden generiert
-- 🌐 **Offline-fähig** - Funktioniert auch ohne Internet
+- ✅ **100% GDPR Compliant** - All data stays locally on your device
+- 🚀 **No Installation Required** - Runs directly in your browser
+- 📱 **Mobile-First Design** - Optimized for all devices
+- 🎨 **Drag & Drop Editor** - Intuitive user experience
+- ⚡ **Instant Export** - QR code generated in seconds
+- 🌐 **Offline Capable** - Works without internet connection
 
 ---
 
@@ -39,34 +39,34 @@ MenuForge ist eine innovative **Web-Anwendung** zur Erstellung digitaler Restaur
 <td width="50%">
 
 ### 🎨 **Design Studio**
-- 5 vorgefertigte Themes (Neon, Sunset, Ocean, Forest, Platinum)
-- Anpassbare Schriftarten (Inter, Poppins, Roboto, Montserrat)
-- Logo-Upload mit automatischer Optimierung
-- Live-Vorschau aller Änderungen
+- 5 pre-built themes (Neon, Sunset, Ocean, Forest, Platinum)
+- Customizable fonts (Inter, Poppins, Roboto, Montserrat)
+- Logo upload with automatic optimization
+- Real-time preview of all changes
 
 ### 📋 **Menu Builder**
-- Drag & Drop Sortierung (Desktop)
-- Touch-optimierte Mobile-Bedienung
-- Kategorien mit benutzerdefinierten Icons
-- Featured-Gerichte Highlighting
-- Unbegrenzte Kategorien und Gerichte
+- Drag & Drop sorting (Desktop)
+- Touch-optimized mobile interface
+- Categories with custom icons
+- Featured dish highlighting
+- Unlimited categories and dishes
 
 </td>
 <td width="50%">
 
-### 📱 **QR-Code Generator**
-- Hochauflösende QR-Codes (PNG/SVG)
-- Logo-Integration in QR-Codes
-- Druckoptimierte Ausgabe
-- Sofortiger Download
-- Verschiedene Ausgabeformate
+### 📱 **QR Code Generator**
+- High-resolution QR codes (PNG/SVG)
+- Logo integration in QR codes
+- Print-optimized output
+- Instant download
+- Multiple export formats
 
 ### 🌐 **Export & Sharing**
-- Responsive HTML-Export
-- Mobile-optimierte Menü-Ansicht
-- Direkter Link-Export
-- Print-freundliche Layouts
-- Social Media Integration
+- Responsive HTML export
+- Mobile-optimized menu view
+- Direct link sharing
+- Print-friendly layouts
+- Social media integration
 
 </td>
 </tr>
@@ -101,7 +101,7 @@ MenuForge ist eine innovative **Web-Anwendung** zur Erstellung digitaler Restaur
 
 ## 🚀 Quick Start
 
-### Voraussetzungen
+### Prerequisites
 - Node.js 18+ 
 - npm 10+
 - Modern Browser (Chrome, Firefox, Safari, Edge)
@@ -109,80 +109,80 @@ MenuForge ist eine innovative **Web-Anwendung** zur Erstellung digitaler Restaur
 ### Installation
 
 ```bash
-# Repository klonen
+# Clone the repository
 git clone https://github.com/yourusername/menuforge.git
 cd menuforge
 
-# Dependencies installieren
+# Install dependencies
 npm install
 
-# Development Server starten
+# Start development server
 npm run start
 ```
 
-Die Anwendung ist dann unter `http://localhost:4200` verfügbar.
+The application will be available at `http://localhost:4200`.
 
-### 🔧 Verfügbare Scripts
+### 🔧 Available Scripts
 
 ```bash
-npm run start          # Development Server (Port 4200)
-npm run build          # Production Build
-npm run build:prod     # Optimized Production Build
-npm run test           # Unit Tests ausführen
-npm run lint           # Code Linting
-npm run serve:prod     # Production Build lokal testen
+npm run start          # Development server (Port 4200)
+npm run build          # Production build
+npm run build:prod     # Optimized production build
+npm run test           # Run unit tests
+npm run lint           # Code linting
+npm run serve:prod     # Serve production build locally
 ```
 
 ---
 
-## 🏗️ Projektstruktur
+## 🏗️ Project Structure
 
 ```
 src/
 ├── app/
-│   ├── components/           # UI Komponenten
+│   ├── components/           # UI Components
 │   │   ├── design-customizer/   # Theme & Design Editor
 │   │   ├── menu-builder/        # Drag & Drop Menu Editor
-│   │   ├── menu-preview/        # Live Vorschau
-│   │   ├── qr-generator/        # QR-Code Generator
-│   │   └── legal/              # Impressum & Datenschutz
+│   │   ├── menu-preview/        # Live Preview
+│   │   ├── qr-generator/        # QR Code Generator
+│   │   └── legal/              # Legal Pages (Privacy, Imprint)
 │   ├── services/            # Business Logic
 │   │   ├── menu.service.ts      # Menu Management
 │   │   ├── theme.service.ts     # Theme Management
-│   │   ├── qr-code.service.ts   # QR-Code Generation
+│   │   ├── qr-code.service.ts   # QR Code Generation
 │   │   ├── export.service.ts    # HTML Export
-│   │   └── legal.service.ts     # DSGVO Compliance
+│   │   └── legal.service.ts     # GDPR Compliance
 │   ├── models/              # TypeScript Interfaces
-│   └── app.component.ts     # Haupt-Komponente
-├── assets/                  # Statische Assets
-└── styles.scss             # Globale Styles
+│   └── app.component.ts     # Main Component
+├── assets/                  # Static Assets
+└── styles.scss             # Global Styles
 ```
 
 ---
 
-## 🎯 Verwendung
+## 🎯 Usage
 
-### 1. Restaurant konfigurieren
+### 1. Configure Restaurant
 ```typescript
-// Beispiel: Restaurant-Daten setzen
+// Example: Set restaurant data
 const restaurant = {
   name: "Bella Vista",
-  description: "Italienische Küche & Weinbar",
+  description: "Italian Cuisine & Wine Bar",
   theme: "sunset",
   font: "Poppins"
 };
 ```
 
-### 2. Menü erstellen
+### 2. Create Menu
 ```typescript
-// Beispiel: Kategorie hinzufügen
+// Example: Add category
 const category = {
   id: 1,
   category: "🍝 Pasta",
   items: [
     {
       name: "Spaghetti Carbonara",
-      description: "Klassisch mit Ei, Speck und Parmesan",
+      description: "Classic with egg, bacon and parmesan",
       price: 12.90,
       featured: true
     }
@@ -190,9 +190,9 @@ const category = {
 };
 ```
 
-### 3. QR-Code generieren
+### 3. Generate QR Code
 ```typescript
-// Beispiel: QR-Code erstellen
+// Example: Create QR code
 const qrOptions = {
   width: 300,
   margin: 2,
@@ -207,13 +207,13 @@ const qrCode = await qrService.generateQRCode(menuUrl, qrOptions);
 ## 🔮 Roadmap
 
 <details>
-<summary><strong>📅 Version 2.0 (Q3 2025)</strong></summary>
+<summary><strong>📅 Version 2.0 (Q2 2025)</strong></summary>
 
 - [ ] 🌍 Multi-Language Support (EN, FR, IT, ES)
-- [ ] 🎭 Weitere Theme-Optionen (Dark Mode, Custom Colors)
-- [ ] 📤 PDF-Export für Menüs
-- [ ] 🖼️ Erweiterte Bild-Integration
-- [ ] 📋 Menü-Templates & Vorlagen
+- [ ] 🎭 Additional Theme Options (Dark Mode, Custom Colors)
+- [ ] 📤 PDF Export for Menus
+- [ ] 🖼️ Enhanced Image Integration
+- [ ] 📋 Menu Templates & Presets
 
 </details>
 
@@ -221,9 +221,9 @@ const qrCode = await qrService.generateQRCode(menuUrl, qrOptions);
 <summary><strong>🚀 Version 2.5 (Q4 2025)</strong></summary>
 
 - [ ] 📱 Progressive Web App (PWA)
-- [ ] 💾 Import/Export von Menü-Daten (JSON/CSV)
-- [ ] 🔗 Erweiterte QR-Code Optionen
-- [ ] 📊 Einfache Analytics (Scans, Views)
+- [ ] 💾 Import/Export Menu Data (JSON/CSV)
+- [ ] 🔗 Advanced QR Code Options
+- [ ] 📊 Simple Analytics (Scans, Views)
 - [ ] 🎨 Drag & Drop Theme Editor
 
 </details>
@@ -232,45 +232,45 @@ const qrCode = await qrService.generateQRCode(menuUrl, qrOptions);
 
 ## 🤝 Contributing
 
-Wir freuen uns über jeden Beitrag! Hier ist wie du helfen kannst:
+We welcome contributions from everyone! Here's how you can help:
 
 ### 🐛 Bug Reports
-Gefunden einen Bug? [Erstelle ein Issue](https://github.com/yourusername/menuforge/issues/new?template=bug_report.md)
+Found a bug? [Create an issue](https://github.com/yourusername/menuforge/issues/new?template=bug_report.md)
 
 ### 💡 Feature Requests
-Hast du eine Idee? [Teile sie mit uns](https://github.com/yourusername/menuforge/issues/new?template=feature_request.md)
+Have an idea? [Share it with us](https://github.com/yourusername/menuforge/issues/new?template=feature_request.md)
 
 ### 🛠️ Development Setup
 
 ```bash
-# Fork das Repository
-# Clone dein Fork
-git clone https://github.com/DEINUSERNAME/menuforge.git
+# Fork the repository
+# Clone your fork
+git clone https://github.com/YOURUSERNAME/menuforge.git
 
-# Branch erstellen
+# Create a branch
 git checkout -b feature/amazing-feature
 
-# Änderungen committen
+# Commit your changes
 git commit -m "feat: add amazing feature"
 
 # Push to branch
 git push origin feature/amazing-feature
 
-# Pull Request erstellen
+# Create Pull Request
 ```
 
 ### 📋 Code Style
 
-- Verwende **TypeScript** für alle neuen Dateien
-- Folge der **Angular Style Guide**
-- Schreibe **Tests** für neue Features
-- Verwende **Conventional Commits**
+- Use **TypeScript** for all new files
+- Follow the **Angular Style Guide**
+- Write **tests** for new features
+- Use **Conventional Commits**
 
 ---
 
 ## 📜 License
 
-Dieses Projekt steht unter der **MIT License** - siehe [LICENSE](LICENSE) für Details.
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ---
 
@@ -278,12 +278,12 @@ Dieses Projekt steht unter der **MIT License** - siehe [LICENSE](LICENSE) für D
 
 <div align="center">
 
-### Brauchen Sie Hilfe?
+### Need Help?
 
 [![Email](https://img.shields.io/badge/Email-marcel.menke1981@gmail.com-00ff88?style=for-the-badge&logo=gmail&logoColor=white)](mailto:marcel.menke1981@gmail.com)
 [![GitHub Issues](https://img.shields.io/badge/GitHub-Issues-00ff88?style=for-the-badge&logo=github&logoColor=white)](https://github.com/yourusername/menuforge/issues)
 
-### Folgen Sie uns
+### Follow Us
 
 [![Website](https://img.shields.io/badge/Website-MenuForge.app-00ff88?style=for-the-badge&logo=globe&logoColor=white)](https://menuforge.app)
 
@@ -293,10 +293,10 @@ Dieses Projekt steht unter der **MIT License** - siehe [LICENSE](LICENSE) für D
 
 <div align="center">
 
-**Erstellt mit ❤️ für die Gastronomie-Branche**
+**Built with ❤️ for the Restaurant Industry**
 
-*MenuForge - Digitale Menüs. Einfach. Schnell. Modern.*
+*MenuForge - Digital Menus. Simple. Fast. Modern.*
 
-⭐ **Star uns auf GitHub** | 🍴 **Fork das Projekt** | 📢 **Teile MenuForge**
+⭐ **Star us on GitHub** | 🍴 **Fork the Project** | 📢 **Share MenuForge**
 
 </div>
