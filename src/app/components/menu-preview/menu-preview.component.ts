@@ -24,12 +24,12 @@ export class MenuPreviewComponent implements OnInit {
   previewFontFamily = signal<string>('Inter');
 
   constructor() {
-    // Effect um Schriftart-Änderungen zu verfolgen
+    // Effect um Schriftart-Änderungen zu verfolgen - MIT allowSignalWrites
     effect(() => {
       const restaurant = this.restaurant();
       this.loadPreviewFont(restaurant.font);
       this.previewFontFamily.set(restaurant.font);
-    });
+    }, { allowSignalWrites: true }); 
   }
 
   ngOnInit() {
