@@ -20,207 +20,211 @@ export class MenuService {
   });
 
   menuCategories = signal<MenuCategory[]>([
-    {
-      id: 1,
-      category: '🥗 VORSPEISEN',
-      items: [
-        {
-          id: 1,
-          name: 'Gemischter Salat',
-          description: 'Frischer Blattsalat mit Tomaten, Gurken und Paprika',
-          price: 8.50,
-          image: undefined,
-          featured: false
-        },
-        {
-          id: 2,
-          name: 'Bruschetta',
-          description: 'Geröstetes Brot mit Tomaten, Basilikum und Knoblauch',
-          price: 7.90,
-          image: undefined,
-          featured: true
-        },
-        {
-          id: 3,
-          name: 'Suppe des Tages',
-          description: 'Täglich wechselnde hausgemachte Suppe',
-          price: 6.50,
-          image: undefined,
-          featured: false
-        },
-        {
-          id: 4,
-          name: 'Caesar Salad',
-          description: 'Römersalat mit Croutons, Parmesan und Caesar-Dressing',
-          price: 11.90,
-          image: undefined,
-          featured: false
-        }
-      ]
-    },
-    {
-      id: 2,
-      category: '🍖 HAUPTSPEISEN',
-      items: [
-        {
-          id: 5,
-          name: 'Schnitzel Wiener Art',
-          description: 'Paniertes Kalbsschnitzel mit Pommes und Salat',
-          price: 16.90,
-          image: undefined,
-          featured: true
-        },
-        {
-          id: 6,
-          name: 'Spaghetti Bolognese',
-          description: 'Klassische Pasta mit Hackfleischsauce',
-          price: 12.50,
-          image: undefined,
-          featured: false
-        },
-        {
-          id: 7,
-          name: 'Gegrilltes Hähnchen',
-          description: 'Hähnchenbrust vom Grill mit Gemüse und Reis',
-          price: 14.90,
-          image: undefined,
-          featured: false
-        },
-        {
-          id: 8,
-          name: 'Pizza Margherita',
-          description: 'Klassische Pizza mit Tomaten, Mozzarella und Basilikum',
-          price: 11.50,
-          image: undefined,
-          featured: false
-        },
-        {
-          id: 9,
-          name: 'Rinderbraten',
-          description: 'Saftiger Rinderbraten mit Rotkohl und Klößen',
-          price: 18.90,
-          image: undefined,
-          featured: false
-        },
-        {
-          id: 10,
-          name: 'Lachs mit Dillsauce',
-          description: 'Gebratener Lachs mit cremiger Dillsauce und Kartoffeln',
-          price: 19.50,
-          image: undefined,
-          featured: true
-        }
-      ]
-    },
-    {
-      id: 3,
-      category: '🍰 NACHTISCH',
-      items: [
-        {
-          id: 11,
-          name: 'Tiramisu',
-          description: 'Klassisches italienisches Dessert mit Mascarpone',
-          price: 6.90,
-          image: undefined,
-          featured: true
-        },
-        {
-          id: 12,
-          name: 'Apfelstrudel',
-          description: 'Hausgemachter Strudel mit Vanillesauce',
-          price: 5.50,
-          image: undefined,
-          featured: false
-        },
-        {
-          id: 13,
-          name: 'Schokoladenkuchen',
-          description: 'Warmer Schokoladenkuchen mit flüssigem Kern',
-          price: 7.50,
-          image: undefined,
-          featured: false
-        },
-        {
-          id: 14,
-          name: 'Eis (3 Kugeln)',
-          description: 'Vanille, Schokolade oder Erdbeere',
-          price: 4.90,
-          image: undefined,
-          featured: false
-        },
-        {
-          id: 15,
-          name: 'Panna Cotta',
-          description: 'Italienisches Dessert mit Beerensauce',
-          price: 6.50,
-          image: undefined,
-          featured: false
-        }
-      ]
-    },
-    {
-      id: 4,
-      category: '🥤 GETRÄNKE',
-      items: [
-        {
-          id: 16,
-          name: 'Cola / Fanta',
-          description: '0,33l Glas',
-          price: 3.50,
-          image: undefined,
-          featured: false
-        },
-        {
-          id: 17,
-          name: 'Mineralwasser',
-          description: '0,25l still oder sprudelnd',
-          price: 2.50,
-          image: undefined,
-          featured: false
-        },
-        {
-          id: 18,
-          name: 'Apfelsaft',
-          description: '0,33l naturtrüb',
-          price: 3.20,
-          image: undefined,
-          featured: false
-        },
-        {
-          id: 19,
-          name: 'Bier vom Fass',
-          description: '0,5l Pils',
-          price: 4.20,
-          image: undefined,
-          featured: true
-        },
-        {
-          id: 20,
-          name: 'Hauswein',
-          description: '0,2l Rot- oder Weißwein',
-          price: 5.50,
-          image: undefined,
-          featured: false
-        },
-        {
-          id: 21,
-          name: 'Kaffee',
-          description: 'Tasse Kaffee oder Espresso',
-          price: 2.80,
-          image: undefined,
-          featured: false
-        },
-        {
-          id: 22,
-          name: 'Heißer Kakao',
-          description: 'Mit Sahne und Marshmallows',
-          price: 3.90,
-          image: undefined,
-          featured: false
-        }
-      ]
-    }
-  ]);
+  {
+    id: 1,
+    category: '🥗 VORSPEISEN',
+    type: 'food',
+    items: [
+      {
+        id: 1,
+        name: 'Gemischter Salat',
+        description: 'Frischer Blattsalat mit Tomaten, Gurken und Paprika',
+        price: 8.50,
+        image: undefined,
+        featured: false
+      },
+      {
+        id: 2,
+        name: 'Bruschetta',
+        description: 'Geröstetes Brot mit Tomaten, Basilikum und Knoblauch',
+        price: 7.90,
+        image: undefined,
+        featured: true
+      },
+      {
+        id: 3,
+        name: 'Suppe des Tages',
+        description: 'Täglich wechselnde hausgemachte Suppe',
+        price: 6.50,
+        image: undefined,
+        featured: false
+      },
+      {
+        id: 4,
+        name: 'Caesar Salad',
+        description: 'Römersalat mit Croutons, Parmesan und Caesar-Dressing',
+        price: 11.90,
+        image: undefined,
+        featured: false
+      }
+    ]
+  },
+  {
+    id: 2,
+    category: '🍖 HAUPTSPEISEN',
+    type: 'food',
+    items: [
+      {
+        id: 5,
+        name: 'Schnitzel Wiener Art',
+        description: 'Paniertes Kalbsschnitzel mit Pommes und Salat',
+        price: 16.90,
+        image: undefined,
+        featured: true
+      },
+      {
+        id: 6,
+        name: 'Spaghetti Bolognese',
+        description: 'Klassische Pasta mit Hackfleischsauce',
+        price: 12.50,
+        image: undefined,
+        featured: false
+      },
+      {
+        id: 7,
+        name: 'Gegrilltes Hähnchen',
+        description: 'Hähnchenbrust vom Grill mit Gemüse und Reis',
+        price: 14.90,
+        image: undefined,
+        featured: false
+      },
+      {
+        id: 8,
+        name: 'Pizza Margherita',
+        description: 'Klassische Pizza mit Tomaten, Mozzarella und Basilikum',
+        price: 11.50,
+        image: undefined,
+        featured: false
+      },
+      {
+        id: 9,
+        name: 'Rinderbraten',
+        description: 'Saftiger Rinderbraten mit Rotkohl und Klößen',
+        price: 18.90,
+        image: undefined,
+        featured: false
+      },
+      {
+        id: 10,
+        name: 'Lachs mit Dillsauce',
+        description: 'Gebratener Lachs mit cremiger Dillsauce und Kartoffeln',
+        price: 19.50,
+        image: undefined,
+        featured: true
+      }
+    ]
+  },
+  {
+    id: 3,
+    category: '🍰 NACHTISCH',
+    type: 'food',
+    items: [
+      {
+        id: 11,
+        name: 'Tiramisu',
+        description: 'Klassisches italienisches Dessert mit Mascarpone',
+        price: 6.90,
+        image: undefined,
+        featured: true
+      },
+      {
+        id: 12,
+        name: 'Apfelstrudel',
+        description: 'Hausgemachter Strudel mit Vanillesauce',
+        price: 5.50,
+        image: undefined,
+        featured: false
+      },
+      {
+        id: 13,
+        name: 'Schokoladenkuchen',
+        description: 'Warmer Schokoladenkuchen mit flüssigem Kern',
+        price: 7.50,
+        image: undefined,
+        featured: false
+      },
+      {
+        id: 14,
+        name: 'Eis (3 Kugeln)',
+        description: 'Vanille, Schokolade oder Erdbeere',
+        price: 4.90,
+        image: undefined,
+        featured: false
+      },
+      {
+        id: 15,
+        name: 'Panna Cotta',
+        description: 'Italienisches Dessert mit Beerensauce',
+        price: 6.50,
+        image: undefined,
+        featured: false
+      }
+    ]
+  },
+  {
+    id: 4,
+    category: '🥤 GETRÄNKE',
+    type: 'drinks',
+    items: [
+      {
+        id: 16,
+        name: 'Cola / Fanta',
+        description: '0,33l Glas',
+        price: 3.50,
+        image: undefined,
+        featured: false
+      },
+      {
+        id: 17,
+        name: 'Mineralwasser',
+        description: '0,25l still oder sprudelnd',
+        price: 2.50,
+        image: undefined,
+        featured: false
+      },
+      {
+        id: 18,
+        name: 'Apfelsaft',
+        description: '0,33l naturtrüb',
+        price: 3.20,
+        image: undefined,
+        featured: false
+      },
+      {
+        id: 19,
+        name: 'Bier vom Fass',
+        description: '0,5l Pils',
+        price: 4.20,
+        image: undefined,
+        featured: true
+      },
+      {
+        id: 20,
+        name: 'Hauswein',
+        description: '0,2l Rot- oder Weißwein',
+        price: 5.50,
+        image: undefined,
+        featured: false
+      },
+      {
+        id: 21,
+        name: 'Kaffee',
+        description: 'Tasse Kaffee oder Espresso',
+        price: 2.80,
+        image: undefined,
+        featured: false
+      },
+      {
+        id: 22,
+        name: 'Heißer Kakao',
+        description: 'Mit Sahne und Marshmallows',
+        price: 3.90,
+        image: undefined,
+        featured: false
+      }
+    ]
+  }
+]);
 
   // Restaurant Methods
   updateRestaurant(updates: Partial<Restaurant>) {
@@ -229,13 +233,14 @@ export class MenuService {
 
   // Category Methods
   addCategory() {
-    const newCategory: MenuCategory = {
-      id: Date.now(),
-      category: '📋 Neue Kategorie',
-      items: []
-    };
-    this.menuCategories.update(categories => [...categories, newCategory]);
-  }
+  const newCategory: MenuCategory = {
+    id: Date.now(),
+    category: '📋 Neue Kategorie',
+    type: 'food', // Standard: food
+    items: []
+  };
+  this.menuCategories.update(categories => [...categories, newCategory]);
+}
 
   updateCategory(categoryId: number, updates: Partial<MenuCategory>) {
     this.menuCategories.update(categories =>
