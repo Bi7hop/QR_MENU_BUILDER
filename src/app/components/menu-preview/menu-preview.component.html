@@ -13,54 +13,204 @@
   </div>
 
   <!-- Menu Content -->
-  <div class="p-8" [style.font-family]="getPreviewFontFamily()">
-    <div *ngIf="menuCategories().length > 0; else noMenu" class="space-y-8">
-      <!-- Categories -->
-      <div *ngFor="let category of menuCategories(); trackBy: trackByCategory" class="space-y-4">
-        <div class="border-b border-white/20 pb-2">
-          <h2 class="text-2xl font-bold text-white" [style.font-family]="getPreviewFontFamily()">
-            {{ category.category }}
-          </h2>
-        </div>
-
-        <!-- Items in Category -->
-        <div class="space-y-4">
-          <div
-            *ngFor="let item of category.items; trackBy: trackByItem"
-            class="flex justify-between items-start p-4 rounded-xl transition-all duration-300"
-            [class]="item.featured ? 'bg-green-400/10 border border-green-400/30' : 'bg-white/5 hover:bg-white/10'"
-          >
+  <div class="p-8 pb-24" [style.font-family]="getPreviewFontFamily()">
+    
+    <!-- Cart View -->
+    <div *ngIf="currentView() === 'cart'" class="space-y-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-white">Ihre Bestellung</h2>
+        <button
+          (click)="goToMenu()"
+          class="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors"
+        >
+          ← Zurück zum Menü
+        </button>
+      </div>
+      
+      <!-- Cart Items -->
+      <div *ngIf="!cartService.isEmpty(); else emptyCart" class="space-y-4">
+        <div
+          *ngFor="let cartDetail of getCartItemsWithDetails()"
+          class="bg-white/5 rounded-lg border border-white/10 p-4"
+        >
+          <div class="flex justify-between items-start">
             <div class="flex-1">
-              <div class="flex items-center space-x-2 mb-2">
-                <h3 class="text-lg font-semibold text-white" [style.font-family]="getPreviewFontFamily()">
-                  {{ item.name }}
-                </h3>
-                <span *ngIf="item.featured" class="px-2 py-1 bg-green-400 text-black text-xs rounded-full font-bold">
-                  FEATURED
-                </span>
+              <h3 class="font-semibold text-white">{{ cartDetail.item.name }}</h3>
+              <p class="text-sm text-gray-400">€{{ cartDetail.item.price.toFixed(2) }} × {{ cartDetail.cartItem.quantity }}</p>
+              <div *ngIf="cartDetail.cartItem.specialRequest" class="text-sm text-yellow-300 mt-1">
+                🗒️ {{ cartDetail.cartItem.specialRequest }}
               </div>
-              <p class="text-white/70 text-sm leading-relaxed" [style.font-family]="getPreviewFontFamily()">
-                {{ item.description }}
-              </p>
             </div>
-            <div class="ml-4 text-right">
-              <div class="text-xl font-bold text-green-400" [style.font-family]="getPreviewFontFamily()">
-                €{{ item.price.toFixed(2) }}
+            <div class="text-right">
+              <div class="font-bold text-green-400">
+                €{{ (cartDetail.item.price * cartDetail.cartItem.quantity).toFixed(2) }}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Total -->
+        <div class="border-t border-white/20 pt-4">
+          <div class="flex justify-between items-center">
+            <span class="text-xl font-bold text-white">Gesamt:</span>
+            <span class="text-2xl font-bold text-green-400">€{{ getCartTotal().toFixed(2) }}</span>
+          </div>
+        </div>
+        
+        <!-- Customer Info -->
+        <div class="bg-white/5 rounded-lg border border-white/10 p-4">
+          <h3 class="font-semibold text-white mb-4">Tischinformation</h3>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-sm font-medium text-white/70 mb-1">Tischnummer *</label>
+              <input
+                type="text"
+                [value]="cartService.customer().table"
+                (input)="updateCustomerTable($any($event.target).value)"
+                class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-green-400 transition-colors"
+                placeholder="z.B. Tisch 5"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-white/70 mb-1">Name (optional)</label>
+              <input
+                type="text"
+                [value]="cartService.customer().name || ''"
+                (input)="updateCustomerName($any($event.target).value)"
+                class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:border-green-400 transition-colors"
+                placeholder="Ihr Name"
+              />
+            </div>
+          </div>
+        </div>
+        
+        <!-- Submit Order -->
+        <button
+          (click)="submitOrder()"
+          [disabled]="!cartService.isReadyForOrder()"
+          class="w-full py-3 px-6 bg-green-500 hover:bg-green-600 disabled:bg-gray-500 disabled:cursor-not-allowed text-white rounded-lg font-bold transition-colors"
+        >
+          Bestellung aufgeben
+        </button>
+      </div>
+      
+      <ng-template #emptyCart>
+        <div class="text-center py-8 text-white/50">
+          <div class="text-4xl mb-4">🛒</div>
+          <p>Ihr Warenkorb ist leer</p>
+          <button
+            (click)="goToMenu()"
+            class="mt-4 px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors"
+          >
+            Zurück zum Menü
+          </button>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Menu View -->
+    <div *ngIf="currentView() === 'menu'" class="space-y-8">
+      <div *ngIf="menuCategories().length > 0; else noMenu" class="space-y-8">
+        <!-- Categories -->
+        <div *ngFor="let category of menuCategories(); trackBy: trackByCategory" class="space-y-4">
+          <div class="border-b border-white/20 pb-2">
+            <h2 class="text-2xl font-bold text-white" [style.font-family]="getPreviewFontFamily()">
+              {{ category.category }}
+            </h2>
+          </div>
+
+          <!-- Items in Category -->
+          <div class="space-y-4">
+            <div
+              *ngFor="let item of category.items; trackBy: trackByItem"
+              class="p-4 rounded-xl transition-all duration-300"
+              [class]="getItemClasses(item)"
+            >
+              <div class="flex justify-between items-start">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-2 mb-2">
+                    <h3 class="text-lg font-semibold text-white" [style.font-family]="getPreviewFontFamily()">
+                      {{ item.name }}
+                    </h3>
+                    <span *ngIf="item.featured" class="px-2 py-1 bg-green-400 text-black text-xs rounded-full font-bold">
+                      FEATURED
+                    </span>
+                  </div>
+                  <p class="text-white/70 text-sm leading-relaxed mb-3" [style.font-family]="getPreviewFontFamily()">
+                    {{ item.description }}
+                  </p>
+                  
+                  <!-- Order Controls -->
+                  <div *ngIf="showOrderMode()" class="space-y-3">
+                    <!-- Add to Cart / Quantity Controls -->
+                    <div *ngIf="!cartService.isInCart(item.id); else quantityControls">
+                      <button
+                        (click)="addToCart(item.id)"
+                        class="flex items-center space-x-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+                      >
+                        <span>✓</span>
+                        <span>Auswählen</span>
+                      </button>
+                    </div>
+                    
+                    <ng-template #quantityControls>
+                      <!-- Quantity Controls -->
+                      <div class="flex items-center space-x-3 mb-2">
+                        <button
+                          (click)="decreaseQuantity(item.id)"
+                          class="w-8 h-8 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg flex items-center justify-center"
+                        >
+                          <span class="text-white">−</span>
+                        </button>
+                        <span class="w-8 text-center font-semibold text-white">
+                          {{ cartService.getCartItem(item.id)?.quantity || 0 }}
+                        </span>
+                        <button
+                          (click)="increaseQuantity(item.id)"
+                          class="w-8 h-8 bg-green-500 hover:bg-green-600 rounded-lg flex items-center justify-center"
+                        >
+                          <span class="text-white font-bold">+</span>
+                        </button>
+                        <button
+                          (click)="removeFromCart(item.id)"
+                          class="ml-2 p-1 text-red-400 hover:text-red-300 transition-colors"
+                        >
+                          ×
+                        </button>
+                      </div>
+                      
+                      <!-- Special Request -->
+                      <input
+                        type="text"
+                        [value]="cartService.getCartItem(item.id)?.specialRequest || ''"
+                        (input)="updateSpecialRequest(item.id, $any($event.target).value)"
+                        placeholder="Extrawünsche (optional)..."
+                        class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 text-sm focus:border-green-400 transition-colors"
+                      />
+                    </ng-template>
+                  </div>
+                </div>
+                <div class="ml-4 text-right">
+                  <div class="text-xl font-bold text-green-400" [style.font-family]="getPreviewFontFamily()">
+                    €{{ item.price.toFixed(2) }}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- No Menu Template -->
-    <ng-template #noMenu>
-      <div class="text-center py-16 text-white/50">
-        <div class="text-6xl mb-4">🍽️</div>
-        <h3 class="text-xl font-semibold mb-2" [style.font-family]="getPreviewFontFamily()">Noch keine Menü-Einträge</h3>
-        <p [style.font-family]="getPreviewFontFamily()">Fügen Sie im Editor Kategorien und Gerichte hinzu, um Ihr Menü zu erstellen.</p>
-      </div>
-    </ng-template>
+      <!-- No Menu Template -->
+      <ng-template #noMenu>
+        <div class="text-center py-16 text-white/50">
+          <div class="text-6xl mb-4">🍽️</div>
+          <h3 class="text-xl font-semibold mb-2" [style.font-family]="getPreviewFontFamily()">Noch keine Menü-Einträge</h3>
+          <p [style.font-family]="getPreviewFontFamily()">Fügen Sie im Editor Kategorien und Gerichte hinzu, um Ihr Menü zu erstellen.</p>
+        </div>
+      </ng-template>
+    </div>
   </div>
 
   <!-- Footer -->
