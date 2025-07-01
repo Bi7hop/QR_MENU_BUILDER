@@ -34,3 +34,10 @@ export interface Theme {
   text: string;
   card: string;
 }
+
+export interface MenuCategory {
+  id: number;
+  category: string;
+  items: MenuItem[];
+  type: 'food' | 'drinks'; 
+}
