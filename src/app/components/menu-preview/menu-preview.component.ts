@@ -1,15 +1,18 @@
 import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MenuService } from '../../services/menu.service';
 import { ThemeService } from '../../services/theme.service';
 import { QrCodeService } from '../../services/qr-code.service';
 import { MenuExportService } from '../../services/menu-export.service';
+import { CartService } from '../../services/cart.service';
+import { OrderService } from '../../services/order.service';
 import { MenuCategory, MenuItem, Restaurant } from '../../models/menu.models';
 
 @Component({
   selector: 'app-menu-preview',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './menu-preview.component.html',
   styleUrl: './menu-preview.component.scss'
 })
@@ -18,10 +21,16 @@ export class MenuPreviewComponent implements OnInit {
   public themeService = inject(ThemeService);
   public qrService = inject(QrCodeService);
   public exportService = inject(MenuExportService);
+  public cartService = inject(CartService);
+  public orderService = inject(OrderService);
 
   exportUrl = signal<string>('');
   exportFileName = signal<string>('');
   previewFontFamily = signal<string>('Inter');
+  
+  // Order related signals
+  showOrderMode = signal<boolean>(true); // Enable ordering by default
+  currentView = signal<'menu' | 'cart'>('menu');
 
   constructor() {
     // Effect um Schriftart-Änderungen zu verfolgen - MIT allowSignalWrites
@@ -37,6 +46,11 @@ export class MenuPreviewComponent implements OnInit {
     const restaurant = this.restaurant();
     this.loadPreviewFont(restaurant.font);
     this.previewFontFamily.set(restaurant.font);
+
+    // Event Listener für Cart Navigation
+    window.addEventListener('goToCart', () => {
+      this.currentView.set('cart');
+    });
   }
 
   private loadPreviewFont(fontName: string) {
@@ -89,6 +103,78 @@ export class MenuPreviewComponent implements OnInit {
     return new Date().toLocaleDateString('de-DE');
   }
 
+  // Navigation Methods
+  goToMenu(): void {
+    this.currentView.set('menu');
+  }
+
+  // Cart Methods
+  addToCart(itemId: number): void {
+    this.cartService.addToCart(itemId, 1, '');
+  }
+
+  removeFromCart(itemId: number): void {
+    this.cartService.removeFromCart(itemId);
+  }
+
+  increaseQuantity(itemId: number): void {
+    const currentItem = this.cartService.getCartItem(itemId);
+    if (currentItem) {
+      this.cartService.updateQuantity(itemId, currentItem.quantity + 1);
+    }
+  }
+
+  decreaseQuantity(itemId: number): void {
+    const currentItem = this.cartService.getCartItem(itemId);
+    if (currentItem) {
+      this.cartService.updateQuantity(itemId, currentItem.quantity - 1);
+    }
+  }
+
+  updateSpecialRequest(itemId: number, request: string): void {
+    this.cartService.updateSpecialRequest(itemId, request);
+  }
+
+  // Customer Info Methods
+  updateCustomerTable(table: string): void {
+    this.cartService.updateCustomerInfo({ table });
+  }
+
+  updateCustomerName(name: string): void {
+    this.cartService.updateCustomerInfo({ name });
+  }
+
+  // Order Methods
+  submitOrder(): void {
+    const orderId = this.orderService.createOrder(this.menuCategories());
+    if (orderId) {
+      alert(`Bestellung erfolgreich aufgegeben!\nBestellnummer: ${orderId}`);
+      this.currentView.set('menu');
+    } else {
+      alert('Fehler beim Aufgeben der Bestellung. Bitte überprüfen Sie Ihre Eingaben.');
+    }
+  }
+
+  // Helper Methods
+  getCartTotal(): number {
+    return this.cartService.calculateTotal(this.menuCategories());
+  }
+
+  getCartItemsWithDetails() {
+    return this.cartService.getCartItemsWithDetails(this.menuCategories());
+  }
+
+  getItemClasses(item: MenuItem): string {
+    const baseClasses = 'transition-all duration-300';
+    const featuredClasses = item.featured ? 'bg-green-400/10 border border-green-400/30' : '';
+    const cartClasses = this.cartService.isInCart(item.id) 
+      ? 'bg-white/10 border border-white/30' 
+      : 'bg-white/5 hover:bg-white/10';
+    
+    return `${baseClasses} ${featuredClasses} ${cartClasses}`.trim();
+  }
+
+  // Export Methods (existing)
   async exportAsHTML() {
     const restaurant = this.restaurant();
     const categories = this.menuCategories();
@@ -183,5 +269,12 @@ export class MenuPreviewComponent implements OnInit {
 
   trackByItem(index: number, item: MenuItem): number {
     return item.id;
+  }
+
+  // Cleanup Event Listener
+  ngOnDestroy() {
+    window.removeEventListener('goToCart', () => {
+      this.currentView.set('cart');
+    });
   }
 }
