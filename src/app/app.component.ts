@@ -14,6 +14,7 @@ import { MenuBuilderComponent } from './components/menu-builder/menu-builder.com
 import { DesignCustomizerComponent } from './components/design-customizer/design-customizer.component';
 import { MenuPreviewComponent } from './components/menu-preview/menu-preview.component';
 import { QrGeneratorComponent } from './components/qr-generator/qr-generator.component';
+import { CartService } from './services/cart.service';
 
 import { ImprintComponent } from './components/legal/imprint/imprint.component';
 import { PrivacyPolicyComponent } from './components/legal/privacy-policy/privacy-policy.component';
@@ -45,6 +46,7 @@ export class AppComponent implements OnInit {
   public qrService = inject(QrCodeService);
   public exportService = inject(MenuExportService);
   public appState = inject(AppStateService);
+  public cartService = inject(CartService);
   private cdr = inject(ChangeDetectorRef);
 
   // State Signals
@@ -103,6 +105,24 @@ export class AppComponent implements OnInit {
       this.handleError('Fehler beim Laden der Anwendung');
     }
   }
+
+  // Cart Button Methods
+shouldShowCartButton(): boolean {
+  return !this.cartService.isEmpty();
+}
+
+getCartItemCount(): number {
+  return this.cartService.itemCount();
+}
+
+getCartTotal(): number {
+  return this.cartService.calculateTotal(this.menuService.menuCategories());
+}
+
+goToCartInPreview(): void {
+  // Signal an MenuPreview senden, zur Cart-View zu wechseln
+  window.dispatchEvent(new CustomEvent('goToCart'));
+}
 
   // User Preferences
   private loadUserPreferences() {
